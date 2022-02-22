@@ -131,7 +131,7 @@ function App() {
   const signoutHandler = () => {
     signOut(auth).then(() => {
       // Sign-out successful.
-      window.location.href = "/dashboard";
+      window.location.href = "/home";
     }).catch((error) => {
       toast.error(error.message);
     });
