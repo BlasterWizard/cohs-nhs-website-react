@@ -40,7 +40,7 @@ const SigninForm: React.FC<SigninFormProps> = () => {
       }
     
     return (
-        <div className="bg-white/60 p-5 rounded-lg mt-10">
+        <div className="bg-white/60 py-5 px-20 rounded-lg mt-10 w-fit">
             <Form>
                 <Form.Group controlId="fromBasicEmail">
                     <Form.Label className="font-bold">Email Address:</Form.Label>

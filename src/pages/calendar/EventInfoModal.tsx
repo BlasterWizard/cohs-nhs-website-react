@@ -18,7 +18,7 @@ const EventInfoModal: React.FC<EventInfoModalProps> = ({ show, handleClose, even
           <Modal.Body>
             <h5><strong>Event Hosts:</strong></h5>
             {event.eventHosts.length !== 0 ? event.eventHosts.map((eventHost) => (
-                <Badge pill className="primary-badge">{eventHost.name}</Badge>
+                <Badge pill className="primary-badge">{eventHost}</Badge>
             )) : <h6>No Event Hosts</h6>}
             <h5><strong>Event Description:</strong></h5>
             <h6>{event.description ? event.description : "No Event Description"}</h6>

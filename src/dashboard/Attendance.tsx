@@ -74,11 +74,14 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
                 />
               }
             >
-              {priorAttendedEvents.map(
-                (attendedEvent: AttendedEvent, index: number) => (
-                  <AttendanceEvent event={attendedEvent} key={index} />
-                )
-              )}
+              <div className="space-y-5">
+                {priorAttendedEvents.map(
+                  (attendedEvent: AttendedEvent, index: number) => (
+                    <AttendanceEvent event={attendedEvent} key={index} />
+                  )
+                )}
+              </div>
+              
             </Collapsible>
             <Collapsible
               trigger={
@@ -96,11 +99,13 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
                 />
               }
             >
-              {todayAttendedEvents.map(
-                (attendedEvent: AttendedEvent, index: number) => (
-                  <AttendanceEvent event={attendedEvent} key={index} />
-                )
-              )}
+              <div className="space-y-5">
+                {todayAttendedEvents.map(
+                  (attendedEvent: AttendedEvent, index: number) => (
+                    <AttendanceEvent event={attendedEvent} key={index} />
+                  )
+                )}
+              </div>
             </Collapsible>
             <Collapsible
               trigger={
@@ -118,11 +123,13 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
                 />
               }
             >
-              {upcomingAttendedEvents.map(
-                (attendedEvent: AttendedEvent, index: number) => (
-                  <AttendanceEvent event={attendedEvent} key={index} />
-                )
-              )}
+              <div className="space-y-5">
+                {upcomingAttendedEvents.map(
+                  (attendedEvent: AttendedEvent, index: number) => (
+                    <AttendanceEvent event={attendedEvent} key={index} />
+                  )
+                )}
+              </div>
             </Collapsible>
           </>
         )}
@@ -133,24 +140,24 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
 
 const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event }) => {
   return (
-    <div className="glass">
-      <h4 className="text-xl font-bold">{event.localEventName}</h4>
-      <Badge
-        pill
-        className={event.didAttend ? "primary-badge" : "danger-badge"}
-      >
-        {event.didAttend ? "Present" : "Absent"}
-      </Badge>
-      <div className="honor-point">
+    <div className="bg-white/60 p-3 rounded-2xl flex flex-col items-center space-y-3">
+      <h4 className="text-xl text-center font-bold">{event.localEventName}</h4>
+      <h4>{event.startDate ? event.startDate.toDate().toLocaleDateString("en-US") : ""}</h4>
+      <div className="flex space-x-3">
+        <p className={event.didAttend ? "bg-emerald-400 text-white font-bold w-fit rounded-full p-0.5 px-2" : "bg-red-400 text-white font-bold w-fit rounded-full p-0.5 px-2"}>
+          {event.didAttend ? "Present" : "Absent"}
+        </p>
         {event.projectHours ? (
-          <Badge pill className="success-badge">
-            <strong className="honor-point-value">{event.projectHours}</strong>
-            <i className="far fa-clock"></i>
-          </Badge>
+              <p className="bg-blue-400 rounded-full py-0.5 px-3 w-fit text-white space-x-2">
+                <strong className="honor-point-value">{event.projectHours}</strong>
+                <i className="far fa-clock"></i>
+              </p>
+          
         ) : (
           ""
         )}
       </div>
+     
     </div>
   );
 };

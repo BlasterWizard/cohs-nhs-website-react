@@ -13,6 +13,10 @@ import Dashboard from "./dashboard/Dashboard";
 import FAQs from "./pages/FAQs";
 import Officers from "./pages/Officers";
 import Calendar from "./pages/calendar/Calendar";
+import Profile from "./dashboard/profile/Profile";
+import Attendance from "./dashboard/Attendance";
+import Projects from "./dashboard/Projects";
+import AdminDashboard from "./admin-dashboard/AdminDashboard";
 
 
 export interface Event {
@@ -21,17 +25,16 @@ export interface Event {
   endDate: Date;
   name: string;
   optionality: string;
-  description?: string;
+  description: string;
   hasProjectHours: boolean;
   docId: string;
-  eventHosts: Student[];
+  eventHosts: string[];
 }
 
 export interface Announcement {
   title: string;
   content: string;
   author: string;
-  randId: number;
   docId: string;
 }
 
@@ -77,7 +80,7 @@ function App() {
   var [student, setStudent] = useState<Student>();
   const [students, setStudents] = useState<Student[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
-  // const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
 
@@ -95,7 +98,7 @@ function App() {
         // setIsAuthenticating(false);
         fetchAllStudentsFromFirestore();
         fetchEventsFromFirestore();
-        // fetchAnnouncementsFromFirestore();
+        fetchAnnouncementsFromFirestore();
 
         console.log("user logged in");
       } else {
@@ -105,27 +108,27 @@ function App() {
     });
   }
 
-  // async function fetchAnnouncementsFromFirestore() {
-  //   setLoading(true);
-  //   console.log("fetch announcements");
-  //   const announcementsQS = await getDocs(collection(db, "announcements"));
-  //   const items: Announcement[] = [];
-  //   announcementsQS.forEach((doc) => {
-  //     const { title, content, author } = doc.data();
-  //       items.push({
-  //         title: title,
-  //         content: content,
-  //         author: author,
-  //         randId: Math.random() * 10000,
-  //         docId: doc.id,
-  //       });
-  //   });
-  //   setAnnouncements(items);
-  //   setLoading(false);
-  // }
-
-
-  // //Try to sign in user
+  async function fetchAnnouncementsFromFirestore() {
+    setLoading(true);
+    console.log("fetch announcements");
+    const announcementsQS = await query(collection(db, "announcements"));
+    var items: Announcement[] = [];
+    const unsubscribeToAnnouncementsQS = onSnapshot(announcementsQS, (querySnapshot) => {
+      items = [];
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data());
+        const { title, content, author } = doc.data();
+          items.push({
+            title: title,
+            content: content,
+            author: author,
+            docId: doc.id,
+          });
+      });
+      setAnnouncements(items);
+    });
+    setLoading(false);
+  }
  
 
   const signoutHandler = () => {
@@ -141,8 +144,9 @@ function App() {
   async function fetchEventsFromFirestore() {
     setLoading(true);
     const eventsQS = await query(collection(db, "events-Data"));
-    const items: Event[] = [];
+    var items: Event[] = [];
     const unsubscribeToEventsQS = onSnapshot(eventsQS, (querySnapshot) => {
+      items = [];
       querySnapshot.forEach((doc) => {
         var {
         code,
@@ -152,7 +156,7 @@ function App() {
         description,
         optionality,
         hasProjectHours,
-        eventHosts,
+        hosts,
       } = doc.data();
       items.push({
         code: code,
@@ -163,13 +167,12 @@ function App() {
         hasProjectHours: hasProjectHours,
         docId: doc.id,
         description: description,
-        eventHosts: eventHosts ? eventHosts : [],
+        eventHosts: hosts
       });
-    });
-    });
-
       items.sort((a, b) => a.code.localeCompare(b.code));
       setEvents(items);
+    });
+    });
       setLoading(false);
   }
 
@@ -196,29 +199,24 @@ function App() {
           items.push(studentObj);
   
           if (user?.uid != undefined && studentData.studentUID === user?.uid) {
-            console.log(user?.uid);
-            console.log(studentData);
             setStudent(studentObj);
           }
       });
+      items = items.sort((a, b) => a.name.localeCompare(b.name));
+      setStudents(items);
     });
-    setStudents(items);
     setLoading(false);
   }
 
-  // const getStudentNameFromID = (id: string): string => {
-  //   for (var i = 0; i < students.length; i++) {
-  //     if (students[i].specialId === id) {
-  //       return students[i].name;
-  //     }
-  //   }
-  //   return "";
-  // }
-
-  // if (isAuthenticating) {
-  //   return null;
-  // }
-  
+  const getStudentNameFromID = (id: String):string => {
+    for (var i = 0; i < students.length; i++) {
+      if (students[i].specialId === id) {
+        console.log("yoo!");
+        return students[i].name;
+      }
+    }
+    return "";
+  }
 
   return (
     <div>
@@ -245,7 +243,7 @@ function App() {
             {user && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
             {user && (
               <Nav.Link className="bg-red-500 rounded-lg p-2">
-                <button onClick={signoutHandler}><p className="font-bold">Logout</p></button>
+                <button onClick={signoutHandler}><p className="font-bold text-white">Logout</p></button>
               </Nav.Link>
             )}
             {student?.isAdmin && user && (
@@ -271,26 +269,17 @@ function App() {
               isLoading={loading}
               events={events}
             />}></Route>
-        <Route path="/attendance">
-            {/* <Attendance isLoading={loading} student={student}/> */}
-        </Route>
-        <Route path="/projects">
-            {/* <Projects student={student} isLoading={loading}  getStudentNameFromID={getStudentNameFromID}/> */}
-        </Route>
-        <Route path="/profile">
-            {/* <Profile user={user} student={student} isLoading={loading} /> */}
-        </Route>
-        <Route path="/admin-dashboard">
-            {/* <AdminDashboard
+        <Route path="/attendance" element={<Attendance isLoading={loading} student={student}/>}></Route>
+        <Route path="/projects" element={<Projects student={student} isLoading={loading}  getStudentNameFromID={getStudentNameFromID}/>}></Route>
+        <Route path="/profile" element={<Profile user={user} student={student} isLoading={loading} />}></Route>
+        <Route path="/admin-dashboard" element={<AdminDashboard
               student={student}
               students={students}
-              setEvents={setEvents}
               events={events}
               isLoading={loading}
-              fetchAnnouncementsFromFirestore={fetchAnnouncementsFromFirestore}
               announcements={announcements}
-            /> */}
-        </Route>
+              getStudentNameFromID={getStudentNameFromID}
+            />}></Route>
         <Route path="/admin-attendance">
             {/* <AdminAttendance
               events={events}

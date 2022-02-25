@@ -1,6 +1,5 @@
 import React from "react";
-import { Badge } from "react-bootstrap";
-import {AttendedEvent, Event, Student } from "../App";
+import {Announcement, AttendedEvent, Event, Student } from "../App";
 
 export enum DropdownHeaderStates {
   Open = "open",
@@ -10,7 +9,7 @@ export enum DropdownHeaderStates {
 export interface DropdownHeaderProps {
   ddState: DropdownHeaderStates;
   text: string;
-  list: Student[] | Event[] | AttendedEvent[];
+  list: Student[] | Event[] | AttendedEvent[] | Announcement[];
 }
 
 const DropdownHeader: React.FC<DropdownHeaderProps> = ({ text, ddState, list }) => {

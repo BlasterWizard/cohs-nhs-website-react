@@ -4,7 +4,7 @@ import SpinnerNode from "../components/Spinner";
 import DashboardPagination, {
   DashboardPaginationKeys,
 } from "../components/DashboardPagination";
-import { Badge, Button, Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 export interface ProjectsProps {
   student: Student | undefined;
@@ -55,7 +55,7 @@ const Projects: React.FC<ProjectsProps> = ({ student, isLoading, getStudentNameF
 
 const ProjectView: React.FC<ProjectViewAndModalProps> = ({project, show, handleClose, getStudentNameFromID}) => {
   return (
-    <div className="glass hover:drop-shadow-2xl hover:bg-sky-100">
+    <div className="bg-white/60 p-20 rounded-lg hover:drop-shadow-2xl hover:bg-sky-100">
       <h4 className="text-xl font-bold">{project.projectName}</h4>
       <ProjectDetailModal project={project} show={show} handleClose={handleClose} getStudentNameFromID={getStudentNameFromID}/>
     </div>

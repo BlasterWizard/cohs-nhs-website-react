@@ -15,7 +15,7 @@ export enum AdminPaginationKeys {
 
 const AdminPagination: React.FC<AdminPaginationProps> = ({defaultActiveKey}) => {
     return (  
-        <div className="small-glass">
+        <div className="bg-white/60 p-3 rounded-full m-3">
             <Nav variant="pills" defaultActiveKey={defaultActiveKey}>
                 <Nav.Item>
                     <Nav.Link eventKey="admin-dashboard" href="/admin-dashboard">Adminboard</Nav.Link>
