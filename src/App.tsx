@@ -16,7 +16,8 @@ import Calendar from "./pages/calendar/Calendar";
 import Profile from "./dashboard/profile/Profile";
 import Attendance from "./dashboard/Attendance";
 import Projects from "./dashboard/Projects";
-import AdminDashboard from "./admin-dashboard/AdminDashboard";
+import AdminDashboard from "./admin/admin-dashboard/AdminDashboard";
+import AdminSettings from "./admin/AdminSettings";
 
 
 export interface Event {
@@ -208,14 +209,21 @@ function App() {
     setLoading(false);
   }
 
-  const getStudentNameFromID = (id: String):string => {
+  const getStudentNameFromID = (id: string):string => {
     for (var i = 0; i < students.length; i++) {
       if (students[i].specialId === id) {
-        console.log("yoo!");
         return students[i].name;
       }
     }
     return "";
+  }
+
+  const getStudentObjectFromID = (id:string):Student | undefined => {
+    for (var i = 0; i < students.length; i++) {
+      if (students[i].specialId === id) {
+        return students[i];
+      }
+    }
   }
 
   return (
@@ -297,9 +305,7 @@ function App() {
         <Route path="/admin-projects/non-NHS">
           {/* <AdminNonNHSProjects /> */}
         </Route>
-        <Route path="/admin-settings">
-            {/* <AdminSettings students={students} isLoading={loading} /> */}
-        </Route>
+        <Route path="/admin-settings" element={<AdminSettings students={students} isLoading={loading} />}></Route>
         <Route path="/home" element={ <Home />} />
       </Routes>
     </div>

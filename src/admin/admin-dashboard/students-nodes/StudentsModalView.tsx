@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { Student } from '../../App';
+import { Student } from '../../../App';
 
 interface StudentsModalViewProps {
     students: Student[];

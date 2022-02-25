@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Announcement, Event, Student } from "../App";
+import { Announcement, Event, Student } from "../../App";
 import "react-datepicker/dist/react-datepicker.css";
 import AdminPagination, {
   AdminPaginationKeys,
-} from "../components/AdminPagination";
-import SpinnerNode from "../components/Spinner";
+} from "../../components/AdminPagination";
+import SpinnerNode from "../../components/Spinner";
 import AdminDashboardStats from "./AdminDashboardStats";
 import AdminEventsDashboard from "./events-nodes/AdminEventsDashboard";
 import AdminStudentsDashboard from "./students-nodes/AdminStudentsDashboard";

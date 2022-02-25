@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import db from "../../firebase";
+import db from "../../../firebase";
 import { useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
 import toast from "react-hot-toast";
-import { AttendedEvent, Event, Student } from "../../App";
+import { AttendedEvent, Event, Student } from "../../../App";
 import { doc, updateDoc } from "firebase/firestore";
 import Select from "react-select";
 
@@ -16,7 +16,7 @@ interface AdminEditEventModalProps {
   getStudentNameFromID: (id:string) => string
 }
 
-export interface EventAuthorOption {
+export interface SelectionOption {
   value: string;
   label: string;
 }
@@ -36,13 +36,13 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
   const [newAllowsProjectHours, setNewAllowsProjectHours] =
     useState<boolean>(false);
   const [newEventAuthors, setNewEventAuthors] = useState<string[]>([]);
-  const [defaultEventAuthors, setDefaultEventAuthors] = useState<EventAuthorOption[]>([]);
-  const [eventAuthorOptions, setEventAuthorOptions] = useState<EventAuthorOption[]>([]);
+  const [defaultEventAuthors, setDefaultEventAuthors] = useState<SelectionOption[]>([]);
+  const [eventAuthorOptions, setSelectionOptions] = useState<SelectionOption[]>([]);
 
 
   useEffect(() => {
-    createEventAuthorOptions();
-    createDefaultEventAuthorOptions();
+    createSelectionOptions();
+    createDefaultSelectionOptions();
     setNewEventName(event.name);
     if (event.startDate) {
       setNewStartDate(event.startDate);
@@ -86,30 +86,30 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
     return true;
   };
 
-  const createEventAuthorOptions = () => {
-    const studentEventAuthorOptions: EventAuthorOption[] = [];
+  const createSelectionOptions = () => {
+    const studentSelectionOptions: SelectionOption[] = [];
     students.forEach((student) => {
-      studentEventAuthorOptions.push({
+      studentSelectionOptions.push({
         value: student.name,
         label: student.name
       });
     });
-    setEventAuthorOptions(studentEventAuthorOptions);
+    setSelectionOptions(studentSelectionOptions);
   }
 
-  const createDefaultEventAuthorOptions = () => {
-    const defaultEventAuthorOptionsArray: EventAuthorOption[] = [];
+  const createDefaultSelectionOptions = () => {
+    const defaultSelectionOptionsArray: SelectionOption[] = [];
     console.log(event);
     event.eventHosts.forEach((host) => {
       const hostName = getStudentNameFromID(host);
       console.log(hostName);
-      defaultEventAuthorOptionsArray.push({
+      defaultSelectionOptionsArray.push({
         value: hostName,
         label: hostName
       });
     });
 
-    setDefaultEventAuthors(defaultEventAuthorOptionsArray);
+    setDefaultEventAuthors(defaultSelectionOptionsArray);
     console.log(defaultEventAuthors);
   }
 
@@ -160,7 +160,7 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
   const addNewEventAuthor = (e: any) => {
     const items: string[] = [];
     if (e.length > 0) {
-      e.forEach((entry: EventAuthorOption) => {
+      e.forEach((entry: SelectionOption) => {
         console.log(getStudentIDFromName(entry.value));
         items.push(getStudentIDFromName(entry.value));
       });

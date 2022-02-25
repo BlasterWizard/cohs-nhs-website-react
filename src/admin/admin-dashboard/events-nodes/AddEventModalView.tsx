@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import db from "../../firebase";
+import db from "../../../firebase";
 import Form from "react-bootstrap/Form";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
-import { Event, Student } from "../../App";
+import { Event, Student } from "../../../App";
 import { addDoc, collection } from "firebase/firestore";
 import { Button, Modal } from "react-bootstrap";
 import Select from "react-select";
-import { EventAuthorOption } from "./AdminEditEventModal";
+import { SelectionOption } from "./AdminEditEventModal";
 
 interface AddEventModalViewProps {
   eventList: Event[];
@@ -29,10 +29,10 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
   const [optionality, setOptionality] = useState<boolean>(true);
   const [allowsProjectHours, setAllowsProjectHours] = useState<boolean>(false);
   const [newEventAuthors, setNewEventAuthors] = useState<string[]>([]);
-  const [eventAuthorOptions, setEventAuthorOptions] = useState<EventAuthorOption[]>([]);
+  const [eventAuthorOptions, setSelectionOptions] = useState<SelectionOption[]>([]);
 
   useEffect(() => {
-    createEventAuthorOptions();
+    createSelectionOptions();
   }, []); 
 
   const eventNameHandler = (e: any) => {
@@ -51,15 +51,15 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
     setAllowsProjectHours(!allowsProjectHours);
   };
 
-  const createEventAuthorOptions = () => {
-    const studentEventAuthorOptions: EventAuthorOption[] = [];
+  const createSelectionOptions = () => {
+    const studentSelectionOptions: SelectionOption[] = [];
     students.forEach((student) => {
-      studentEventAuthorOptions.push({
+      studentSelectionOptions.push({
         value: student.name,
         label: student.name
       });
     });
-    setEventAuthorOptions(studentEventAuthorOptions);
+    setSelectionOptions(studentSelectionOptions);
   }
 
 
@@ -107,7 +107,7 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
   const addNewEventAuthor = (e: any) => {
     const items: string[] = [];
     if (e.length > 0) {
-      e.forEach((entry: EventAuthorOption) => {
+      e.forEach((entry: SelectionOption) => {
         console.log(getStudentIDFromName(entry.value));
         items.push(getStudentIDFromName(entry.value));
       });

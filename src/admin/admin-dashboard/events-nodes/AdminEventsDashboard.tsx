@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Event, Student } from "../../App";
+import {Event, Student } from "../../../App";
 import AddEventModalView from "./AddEventModalView";
 import AdminEventsView from "./AdminEventsView";
 

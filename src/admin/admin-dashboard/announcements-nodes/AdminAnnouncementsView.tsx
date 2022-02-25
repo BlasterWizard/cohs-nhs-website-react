@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { Announcement } from '../../App';
+import { Announcement } from '../../../App';
 import { doc, deleteDoc, getDocs, collection, updateDoc, deleteField, arrayRemove } from "firebase/firestore";
-import db from "../../firebase";
+import db from "../../../firebase";
 import toast from "react-hot-toast";
 import { Badge } from "react-bootstrap";
 import { useState } from 'react';

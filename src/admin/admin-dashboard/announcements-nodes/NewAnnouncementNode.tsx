@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import db from '../../firebase';
+import db from '../../../firebase';
 import { Form } from "react-bootstrap";
-import { Announcement, Student } from '../../App';
+import { Announcement, Student } from '../../../App';
 import toast from 'react-hot-toast';
 import { doc, addDoc, getDocs, collection, updateDoc, arrayUnion } from "firebase/firestore";
 

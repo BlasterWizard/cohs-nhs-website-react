@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from "react-bootstrap/Table";
-import { Student } from '../App';
+import { Student } from '../../App';
 import { GradeAmountTabulation } from './AdminDashboard';
 
 interface AdminDashboardStatsProps {

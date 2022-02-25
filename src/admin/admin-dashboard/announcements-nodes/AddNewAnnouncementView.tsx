@@ -3,8 +3,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
-import { Student } from '../../App';
-import db from '../../firebase';
+import { Student } from '../../../App';
+import db from '../../../firebase';
 
 interface AddNewAnnouncementViewProps {
     show: boolean;

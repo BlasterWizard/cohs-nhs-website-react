@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Badge, Form } from "react-bootstrap";
-import { Student } from "../../App";
+import { Student } from "../../../App";
 import AddStudentModalView from "./AddStudentModalView";
 import NewStudentModalView from "./AddStudentModalView";
 import StudentsModalView from "./StudentsModalView";

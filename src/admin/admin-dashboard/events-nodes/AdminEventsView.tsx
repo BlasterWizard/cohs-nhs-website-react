@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Event, Student } from "../../App";
+import { Event, Student } from "../../../App";
 import AdminEditEventModal from "./AdminEditEventModal";
-import db from "../../firebase";
+import db from "../../../firebase";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { Button, Modal } from "react-bootstrap";
 

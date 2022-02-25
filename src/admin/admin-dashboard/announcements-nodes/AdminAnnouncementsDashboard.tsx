@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Student, Announcement } from "../../App";
+import { Student, Announcement } from "../../../App";
 import AddNewAnnouncementView from "./AddNewAnnouncementView";
 import AdminAnnouncementsView from "./AdminAnnouncementsView";
 
