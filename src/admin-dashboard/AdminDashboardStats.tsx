@@ -13,7 +13,7 @@ const AdminDashboardStats: React.FC<AdminDashboardStatsProps> = ({
     gradesAmount,
   }) => {
     return (
-      <div className="glass">
+      <div className="bg-white/60 p-3 rounded-2xl m-4">
         <Table striped bordered>
           <tbody>
             <tr>

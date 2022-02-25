@@ -50,7 +50,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 12:
           setGradesAmount((prevGradesAmount) => ({
             ...prevGradesAmount,
-            seniores: prevGradesAmount.seniors + 1,
+            seniors: prevGradesAmount.seniors + 1,
           }));
           break;
         case 11:
