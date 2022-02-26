@@ -18,6 +18,7 @@ import Attendance from "./dashboard/Attendance";
 import Projects from "./dashboard/Projects";
 import AdminDashboard from "./admin/admin-dashboard/AdminDashboard";
 import AdminSettings from "./admin/AdminSettings";
+import AdminAttendance from "./admin/admin-attendance/AdminAttendance";
 
 
 export interface Event {
@@ -288,13 +289,11 @@ function App() {
               announcements={announcements}
               getStudentNameFromID={getStudentNameFromID}
             />}></Route>
-        <Route path="/admin-attendance">
-            {/* <AdminAttendance
+        <Route path="/admin-attendance" element={ <AdminAttendance
               events={events}
               students={students}
               isLoading={loading}
-            /> */}
-        </Route>
+            />}></Route>
         <Route path="/admin-projects/NHS">
             {/* <AdminProjects
               events={events}

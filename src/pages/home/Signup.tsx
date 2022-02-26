@@ -110,7 +110,7 @@ const Signup: React.FC<SignupProps> = ({students}) => {
 
   return (
     <div className="flex justify-center">
-      <Form className="bg-white/60 p-3 m-5 rounded-lg w-1/2">
+      <Form className="bg-white/60 p-5 m-5 rounded-lg w-1/2">
         <h2 className="text-2xl font-bold text-center">Sign Up</h2>
         <div className="bg-white/60 p-2 rounded-lg m-1 flex">
           <p className="m-2 px-2 py-1 bg-red-500 rounded-full flex items-center font-bold text-white">Important!</p>
@@ -168,8 +168,10 @@ const Signup: React.FC<SignupProps> = ({students}) => {
             </Form.Text>
           </Form.Group>
 
+          <hr />
 
-        <Form.Group className="mb-3 flex flex-col">
+
+        <Form.Group as={Row} className="mb-3 flex flex-col">
           <Form.Label className="font-bold">Full Name (First Middle Last):</Form.Label>
           <Form.Control
             value={suFullName}
@@ -180,7 +182,9 @@ const Signup: React.FC<SignupProps> = ({students}) => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3 flex flex-col">
+        <hr />
+
+        <Form.Group as={Row} className="mb-3 flex flex-col">
           <Form.Label className="font-bold">NHS Special ID:</Form.Label>
           <Form.Control
             value={suStudentID}

@@ -9,7 +9,6 @@ const Home: React.FC<HomeProps> = () => {
         <div className="m-5 flex justify-center flex-col items-center">
             <h2 className="text-4xl font-bold">Cosumnes Oaks High School</h2>
             <h2 className="text-4xl font-bold">National Honor Society</h2>
-
             <SigninForm />
         </div>
     );
