@@ -4,12 +4,11 @@ import { AttendedEvent, Event, Student } from '../../App';
 
 interface TableStatsProps {
     student: Student | undefined;
-    totalMandatoryEvents: Event[];
     totalMandatoryAttendedEvents: number;
     totalProjectHours: number;
 }
 
-const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, totalMandatoryAttendedEvents, totalMandatoryEvents}) => {
+const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, totalMandatoryAttendedEvents}) => {
   const [totalEventsAttended, setTotalEventsAttended] = useState<number>(0);
 
   useEffect(() => {
@@ -44,7 +43,7 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
             </tr>
             <tr>
               <td className="font-bold">Non NHS Events Attended:</td>
-              <td>{student?.nonNHSHoursSubmitted}</td>
+              <td></td>
             </tr>
           </tbody>
         </table>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { Badge, Button, Table } from "react-bootstrap";
-import { AttendedEvent, Event, Student } from "../../App";
+import { Table } from "react-bootstrap";
+import {Event, Student } from "../../App";
 import AdminPagination, {
   AdminPaginationKeys,
 } from "../../components/AdminPagination";
@@ -9,8 +9,6 @@ import SpinnerNode from "../../components/Spinner";
 import StudentRow from "./StudentRow";
 import toast from "react-hot-toast";
 import AdminAttendanceChangesModal from "./AdminAttendanceChangesModal";
-import db from "../../firebase";
-import { doc, updateDoc } from "firebase/firestore";
 
 interface AdminAttendanceProps {
   events: Event[];

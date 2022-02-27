@@ -24,22 +24,12 @@ const Officers = () => {
 
         <div className="flex items-center space-x-10 bg-white/60 p-5 rounded-lg">
           <div className="flex flex-col items-center">
-            <img
-              className="object-cover rounded-full w-60 h-60"
-              src={mslew}
-              alt="Mrs. Lew"
-            />
-            <h5 className="font-bold">Ms. Lew</h5>
+            <h5 className="font-bold">Ms. Chase</h5>
             <h6 className="position">Advisor</h6>
           </div>
 
           <div className="flex flex-col items-center">
-            <img
-              className="object-cover rounded-full w-60 h-60"
-              src={profile}
-              alt="Ms. Chase"
-            />
-            <h5 className="font-bold">Ms. Chase</h5>
+            <h5 className="font-bold">Mr. Summers</h5>
             <h6>Co-Advisor</h6>
           </div>
         </div>
@@ -48,32 +38,32 @@ const Officers = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 md:space-x-10 lg:grid-cols-3 space-y-10 bg-white/60 p-20 rounded-lg">
           <div className="flex flex-col items-center mt-10">
-            <img className="object-cover rounded-full w-60 h-60" src={kayla} alt="Kayla" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={kayla} alt="Kayla" />
             <h5 className="font-bold">Kayla Ha</h5>
             <h6 className="position">President</h6>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={justin} alt="Justin" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={justin} alt="Justin" />
             <h5 className="font-bold">Justin Wong</h5>
             <h6 className="position">Vice President & Webmaster</h6>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={lauren} alt="Lauren" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={lauren} alt="Lauren" />
             <h5 className="font-bold">Lauren Kimura</h5>
             <h6 className="position">Project Secretary</h6>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={emily} alt="Emily" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={emily} alt="Emily" />
             <h5 className="font-bold">Emily Wu</h5>
             <h6 className="position">Attendance Secretary</h6>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={cathy} alt="Cathy" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={cathy} alt="Cathy" />
             <h5 className="font-bold">Cathy Liu</h5>
             <h6 className="position">Treasurer</h6>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={ashton} alt="Ashton" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={ashton} alt="Ashton" />
             <h5 className="font-bold">Ashton Simbol</h5>
             <h6 className="position">Public Relations</h6>
           </div>
@@ -83,27 +73,27 @@ const Officers = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 md:space-x-10 lg:grid-cols-3 space-y-10 bg-white/60 p-20 rounded-lg">
           <div className="flex flex-col items-center mt-10">
-            <img className="object-cover rounded-full w-60 h-60" src={gabie} alt="Gabrielle" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={gabie} alt="Gabrielle" />
             <h5>Gabrielle Bambalan</h5>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={rhianna} alt="Rhianna" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={rhianna} alt="Rhianna" />
             <h5>Rhianna Daquis</h5>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={sadie} alt="Sadie" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={sadie} alt="Sadie" />
             <h5>Sadie Sodergren</h5>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={sammy} alt="Sammy" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={sammy} alt="Sammy" />
             <h5>Sammy Chew</h5>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={sophia} alt="Sophia" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={sophia} alt="Sophia" />
             <h5>Sophia Lao</h5>
           </div>
           <div className="flex flex-col items-center">
-            <img className="object-cover rounded-full w-60 h-60" src={marjan} alt="Marjan" />
+            <img className="object-cover rounded-full sm:w-60 sm:h-60" src={marjan} alt="Marjan" />
             <h5>Marjan Omar</h5>
           </div>
         </div>

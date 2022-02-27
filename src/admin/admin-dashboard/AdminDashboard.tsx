@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Announcement, Event, Student } from "../../App";
+import { Announcement, Event, Setting, Student } from "../../App";
 import "react-datepicker/dist/react-datepicker.css";
 import AdminPagination, {
   AdminPaginationKeys,
@@ -9,6 +9,8 @@ import AdminDashboardStats from "./AdminDashboardStats";
 import AdminEventsDashboard from "./events-nodes/AdminEventsDashboard";
 import AdminStudentsDashboard from "./students-nodes/AdminStudentsDashboard";
 import AdminAnnouncementsDashboard from "./announcements-nodes/AdminAnnouncementsDashboard";
+import AdminRequiredHoursView from "./AdminRequiredHoursView";
+import AdminProjectsDashboard from "./projects/AdminProjectsDashboard";
 
 interface AdminDashboardProps {
   students: Student[];
@@ -17,6 +19,8 @@ interface AdminDashboardProps {
   isLoading: boolean;
   announcements: Announcement[];
   getStudentNameFromID: (id:string) => string;
+  getStudentObjectFromID: (id:string) => Student | undefined;
+  settings: Setting;
 }
 
 export interface GradeAmountTabulation {
@@ -31,7 +35,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   events,
   announcements,
   isLoading,
-  getStudentNameFromID
+  getStudentNameFromID,
+  getStudentObjectFromID,
+  settings
 }) => {
   const [gradesAmount, setGradesAmount] = useState<GradeAmountTabulation>({
     seniors: 0,
@@ -81,14 +87,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <main>
       <h2 className="text-4xl font-bold">Admin Dashboard</h2>
       <AdminPagination defaultActiveKey={AdminPaginationKeys.AdminDashboard} />
-      <AdminDashboardStats students={students} gradesAmount={gradesAmount} />
-
-      <div className="flex flex-col space-y-5">
-        <AdminAnnouncementsDashboard student={student} announcements={announcements}/>
-        <AdminStudentsDashboard students={students} />
-        <AdminEventsDashboard events={events} students={students} getStudentNameFromID={getStudentNameFromID}/>
+      <div className="flex flex-col sm:flex-row">
+        <AdminDashboardStats students={students} gradesAmount={gradesAmount} />
+        <AdminRequiredHoursView settings={settings}/>
       </div>
      
+        <div className="flex flex-col space-y-5">
+          <AdminAnnouncementsDashboard student={student} announcements={announcements}/>
+          <AdminStudentsDashboard students={students} />
+          <AdminEventsDashboard events={events} students={students} getStudentNameFromID={getStudentNameFromID}/>
+          <AdminProjectsDashboard students={students} getStudentObjectFromID={getStudentObjectFromID}/>
+        </div>
     </main>
   );
 };

@@ -42,6 +42,7 @@ const AdminDashboardStats: React.FC<AdminDashboardStatsProps> = ({
             </tr>
           </tbody>
         </Table>
+        <p></p>
       </div>
     );
   };

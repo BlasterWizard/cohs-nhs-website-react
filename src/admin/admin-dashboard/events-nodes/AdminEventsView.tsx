@@ -4,6 +4,7 @@ import AdminEditEventModal from "./AdminEditEventModal";
 import db from "../../../firebase";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { Button, Modal } from "react-bootstrap";
+import AdminEventDetailView from "./AdminEventDetailView";
 
 interface AdminEventNodeProps {
   event: Event;
@@ -27,56 +28,6 @@ const AdminEventsView: React.FC<AdminEventsViewProps> = ({
   getStudentNameFromID
 }) => {
   return (
-    //   <Modal scrollable={true} show={show} centered>
-    //     <Modal.Header>
-    //       <Modal.Title
-    //         id="contained-modal-title-vcenter"
-    //         className="font-bold"
-    //       >{event.name}</Modal.Title>
-    //     </Modal.Header>
-    //     <Modal.Body>
-    //       <h6>{event.description}</h6>
-    //       <h6>
-    //         <strong>Start Date & Time:</strong>
-    //       </h6>
-    //       <div className="start-date-time">
-    //         <div className="event-date-time">
-    //           <i className="fas fa-calendar-day"></i>
-    //           <h6>
-    //             {event.startDate
-    //               ? event.startDate.toLocaleDateString("en-US")
-    //               : ""}
-    //           </h6>
-    //         </div>
-    //         <div className="event-date-time">
-    //           <i className="fas fa-clock"></i>
-    //           <h6>
-    //             {event.startDate
-    //               ? event.startDate.toLocaleTimeString([], { timeStyle: "short" })
-    //               : ""}
-    //           </h6>
-    //         </div>
-    //       </div>
-
-    //       <h6>
-    //         <strong>End Date & Time:</strong>
-    //       </h6>
-    //       <div className="end-date-time">
-    //         <div className="event-date-time">
-    //           <i className="fas fa-calendar-day"></i>
-    //           <h6>
-    //             {event.endDate ? event.endDate.toLocaleDateString("en-US") : ""}
-    //           </h6>
-    //         </div>
-    //         <div className="event-date-time">
-    //           <i className="fas fa-clock"></i>
-    //           <h6>
-    //             {event.endDate
-    //               ? event.endDate.toLocaleTimeString([], { timeStyle: "short" })
-    //               : ""}
-    //           </h6>
-    //         </div>
-    //       </div>
     <Modal size="lg" centered show={show}>
       <Modal.Header closeButton>
         <Modal.Title>
@@ -131,19 +82,19 @@ const AdminEventNode: React.FC<AdminEventNodeProps> = ({ event, students, getStu
   }
 
   return (
-    <div className="bg-indigo-200  p-2 rounded-lg flex flex-row w-full items-center">
-      <div className="flex space-x-3">
+    <div className="bg-indigo-100 p-2 rounded-lg flex flex-row w-full items-center">
+      <div className="flex space-x-3 items-center">
         <h6>
           {event.startDate ? event.startDate.toLocaleDateString("en-US") : ""}
         </h6>
-        <h4 className="flex-1">
-          <strong>{event.name}</strong>
+        <h4 className="flex-1 text-center">
+          <strong className="text-sm sm:text-lg">{event.name}</strong>
         </h4>
       </div>
 
       <div className="flex-grow"></div>
 
-      <div className="space-x-3">
+      <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 items-center justify-center sm:space-x-3">
         <button
           className="bg-sky-300 hover:bg-sky-400 rounded-full p-1 px-2"
           onClick={toggleDetailModalShow}
@@ -167,6 +118,7 @@ const AdminEventNode: React.FC<AdminEventNodeProps> = ({ event, students, getStu
         handleShow={toggleModalShow}
         getStudentNameFromID={getStudentNameFromID}
       /> : <div></div> }
+      <AdminEventDetailView show={showDetailView} handleClose={toggleDetailModalShow} event={event} getStudentNameFromID={getStudentNameFromID}/>
     </div>
   );
 };

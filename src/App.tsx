@@ -7,7 +7,7 @@ import db from "./firebase";
 import { getAuth, onAuthStateChanged, signOut, UserCredential } from "firebase/auth";
 import toast from "react-hot-toast";
 import Signup from "./pages/home/Signup";
-import { query, collection, onSnapshot } from "firebase/firestore";
+import { query, collection, onSnapshot, doc, Timestamp } from "firebase/firestore";
 import ToasterNode from "./components/ToasterNode";
 import Dashboard from "./dashboard/Dashboard";
 import FAQs from "./pages/FAQs";
@@ -51,7 +51,7 @@ export interface AttendedEvent {
 
 export interface Project {
   attendees: [string];
-  dates: [Date];
+  dates: [Timestamp];
   leaders: [string];
   projectDescription: string;
   projectName: string;
@@ -76,6 +76,11 @@ export interface OfficerDescription {
   position: string;
 }
 
+export interface Setting {
+  seniorsRequiredHours: number | null;
+  juniorsRequiredHours: number | null;
+}
+
 function App() {
   const auth = getAuth();
   var [user, setUser] = useState<UserCredential["user"]>();
@@ -84,6 +89,10 @@ function App() {
   const [events, setEvents] = useState<Event[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [settings, setSettings] = useState<Setting>({
+    seniorsRequiredHours: null,
+    juniorsRequiredHours: null
+  });
 
 
   useEffect(() => {
@@ -101,13 +110,26 @@ function App() {
         fetchAllStudentsFromFirestore();
         fetchEventsFromFirestore();
         fetchAnnouncementsFromFirestore();
-
+        fetchSettings();
         console.log("user logged in");
       } else {
         // User is signed out
         // setIsAuthenticating(false);
       }
     });
+  }
+
+  async function fetchSettings() {
+    setLoading(true);
+    const unsubscribeToSettings = onSnapshot(doc(db, "settings", "requiredHours"), (doc) => {
+      if (doc.data() != undefined) {
+        setSettings({
+          seniorsRequiredHours: doc.data()!.seniorsRequiredHours,
+          juniorsRequiredHours: doc.data()!.juniorsRequiredHours
+        });
+      }
+    });
+    setLoading(false);
   }
 
   async function fetchAnnouncementsFromFirestore() {
@@ -172,10 +194,10 @@ function App() {
         eventHosts: hosts
       });
       items.sort((a, b) => a.code.localeCompare(b.code));
-      setEvents(items);
     });
+    setEvents(items);
     });
-      setLoading(false);
+    setLoading(false);
   }
 
   async function fetchAllStudentsFromFirestore() {
@@ -221,7 +243,7 @@ function App() {
 
   const getStudentObjectFromID = (id:string):Student | undefined => {
     for (var i = 0; i < students.length; i++) {
-      if (students[i].specialId === id) {
+      if (students[i].docId === id) {
         return students[i];
       }
     }
@@ -231,32 +253,32 @@ function App() {
     <div>
       <ToasterNode />
       <Navbar expand="sm" className="flex items-center p-3">
-        <Navbar.Brand>
+        <Navbar.Brand className="font-bold flex items-center space-x-2">
           COHS NHS{" "}
-          <Badge className="bg-blue-500 p-1 text-white font-bold rounded-full">
+          <Badge className="bg-blue-500 p-1 text-white font-bold rounded-full ml-2">
             BETA
           </Badge>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav" className="flex space-x-5 ml-4 items-center">
-          <Nav className="mr-auto flex space-x-5 ml-4">
-            {!user && <Nav.Link href="/home">Home</Nav.Link>} 
+        <Navbar.Collapse id="basic-navbar-nav" className="flex flex-col sm:flex-row space-x-5 ml-4 items-center">
+          <Nav className="mr-auto flex ml-4">
+            {!user && <Nav.Link href="/">Home</Nav.Link>} 
             {user && <Nav.Link href="/calendar">Calendar</Nav.Link>}
             {user && <Nav.Link href="/officers">Officers</Nav.Link>}
             {user && <Nav.Link href="/faqs">FAQs</Nav.Link>}
+            {user && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
           </Nav>
           <Nav className="flex-grow">
           {!user && <Nav.Link href="/signup">Signup</Nav.Link>}
           </Nav>
-          <Nav className="flex space-x-5 ml-4 items-center">
-            {user && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
+          <Nav className="space-x-5 flex flex-row items-center">
             {user && (
               <Nav.Link className="bg-red-500 rounded-lg p-2">
                 <button onClick={signoutHandler}><p className="font-bold text-white">Logout</p></button>
               </Nav.Link>
             )}
             {student?.isAdmin && user && (
-              <Nav.Link className="bg-emerald-300 font-bold rounded-lg p-2" href="/admin-dashboard">
+              <Nav.Link className="bg-emerald-300 font-bold rounded-lg p-2 text-center" href="/admin-dashboard">
                 Admin Portal
               </Nav.Link>
             )}
@@ -278,8 +300,8 @@ function App() {
               isLoading={loading}
               events={events}
             />}></Route>
-        <Route path="/attendance" element={<Attendance isLoading={loading} student={student}/>}></Route>
-        <Route path="/projects" element={<Projects student={student} isLoading={loading}  getStudentNameFromID={getStudentNameFromID}/>}></Route>
+        <Route path="/attendance" element={<Attendance isLoading={loading} student={student} events={events}/>}></Route>
+        <Route path="/projects" element={<Projects student={student} isLoading={loading}  getStudentObjectFromID={getStudentObjectFromID}/>}></Route>
         <Route path="/profile" element={<Profile user={user} student={student} isLoading={loading} />}></Route>
         <Route path="/admin-dashboard" element={<AdminDashboard
               student={student}
@@ -288,6 +310,8 @@ function App() {
               isLoading={loading}
               announcements={announcements}
               getStudentNameFromID={getStudentNameFromID}
+              getStudentObjectFromID={getStudentObjectFromID}
+              settings={settings}
             />}></Route>
         <Route path="/admin-attendance" element={ <AdminAttendance
               events={events}
@@ -305,7 +329,7 @@ function App() {
           {/* <AdminNonNHSProjects /> */}
         </Route>
         <Route path="/admin-settings" element={<AdminSettings students={students} isLoading={loading} />}></Route>
-        <Route path="/home" element={ <Home />} />
+        <Route path="/" element={ <Home />} />
       </Routes>
     </div>
     

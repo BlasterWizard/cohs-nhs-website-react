@@ -15,16 +15,16 @@ export enum AdminPaginationKeys {
 
 const AdminPagination: React.FC<AdminPaginationProps> = ({defaultActiveKey}) => {
     return (  
-        <div className="bg-white/60 p-3 rounded-full m-3">
-            <Nav variant="pills" defaultActiveKey={defaultActiveKey}>
+        <div className="bg-white/60 rounded-2xl p-3 m-3">
+            <Nav variant="pills" defaultActiveKey={defaultActiveKey} className="flex flex-col sm:flex-row items-center">
                 <Nav.Item>
                     <Nav.Link eventKey="admin-dashboard" href="/admin-dashboard">Adminboard</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="admin-attendance" href="/admin-attendance">Attendance Sheet</Nav.Link>
+                    <Nav.Link eventKey="admin-attendance" href="/admin-attendance">Attendance</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="admin-projects/NHS" href="/admin-projects/NHS">Projects Sheet</Nav.Link>
+                    <Nav.Link eventKey="admin-projects/NHS" href="/admin-projects/NHS">Project Hours</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                     <Nav.Link eventKey="admin-settings" href="/admin-settings">Settings</Nav.Link>

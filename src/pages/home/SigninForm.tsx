@@ -35,13 +35,21 @@ const SigninForm: React.FC<SigninFormProps> = () => {
         const auth = getAuth();
         signInWithEmailAndPassword(auth, emailText, passwordText)
         .then((userCredential) => {
-            const user = userCredential.user;
             console.log("user logged in");
             toast.success("Logged In! Welcome Back!");
             window.location.href = "/dashboard";
         })
         .catch((error) => {
-            toast.error(error.message);
+            switch (error.code) {
+                case "auth/wrong-password":
+                    toast.error("Wrong Password. Please try again");
+                    break;
+                case "auth/too-many-requests":
+                    toast.error("Too many requests. Please try again later");
+                    break;
+                default: 
+                    toast.error(error.message);
+            }
         });
       }
     

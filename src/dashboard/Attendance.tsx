@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from "react";
-import Badge from "react-bootstrap/esm/Badge";
 import Collapsible from "react-collapsible";
-import { AttendedEvent, Student } from "../App";
+import {AttendedEvent, Event, Student } from "../App";
 import DashboardPagination, { DashboardPaginationKeys } from "../components/DashboardPagination";
 import DropdownHeader, { DropdownHeaderStates } from "../components/DropdownHeader";
 import SpinnerNode from "../components/Spinner";
 
 interface AttendanceProps {
   student: Student | undefined;
+  events: Event[];
   isLoading: boolean;
 }
 
 interface AttendanceEventProps {
-  event: AttendedEvent;
-  key: number;
+  event: Event;
+  student: Student | undefined;
 }
 
-const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
-  const [priorAttendedEvents, setPriorAttendedEvents] = useState<AttendedEvent[]>([]);
-  const [todayAttendedEvents, setTodayAttendedEvents] = useState<AttendedEvent[]>([]);
-  const [upcomingAttendedEvents, setUpcomingAttendedEvents] = useState<AttendedEvent[]>([]);
+const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) => {
+  const [priorEvents, setPriorEvents] = useState<Event[]>([]);
+  const [todayEvents, setTodayEvents] = useState<Event[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
 
   useEffect(() => {
+    console.log(events);
     findAndCategorizeEvents();
-  }, [student?.attendance]);
+  }, [events, student?.attendance]);
 
   const findAndCategorizeEvents = () => {
-    const priorEventsList: AttendedEvent[] = [];
-    const todayEventsList: AttendedEvent[] = [];
-    const upcomingEventsList: AttendedEvent[] = [];
+    const priorEventsList: Event[] = [];
+    const todayEventsList: Event[] = [];
+    const upcomingEventsList: Event[] = [];
 
-    student?.attendance.forEach((event: AttendedEvent) => {
+    events.forEach((event: Event) => {
       if (event.startDate < new Date()) {
         priorEventsList.push(event);
       } else if (event.startDate > new Date()) {
@@ -39,9 +40,10 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
         todayEventsList.push(event);
       }
     });
-    setPriorAttendedEvents(priorEventsList);
-    setTodayAttendedEvents(todayEventsList);
-    setUpcomingAttendedEvents(upcomingEventsList);
+
+    setPriorEvents(priorEventsList);
+    setTodayEvents(todayEventsList);
+    setUpcomingEvents(upcomingEventsList);
   };
 
   if (isLoading) {
@@ -53,103 +55,123 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading }) => {
       <DashboardPagination
         defaultActiveKey={DashboardPaginationKeys.Attendance}
       />
-      <div className="attendanceEvents-list">
-        {student?.attendance.length === 0 ? (
-          <h4 className="no-found small-glass">No Events Attended</h4>
-        ) : (
-          <>
-            <Collapsible
-              trigger={
-                <DropdownHeader
-                  text={"Prior Events"}
-                  ddState={DropdownHeaderStates.Closed}
-                  list={priorAttendedEvents}
-                />
-              }
-              triggerWhenOpen={
-                <DropdownHeader
-                  text={"Prior Events"}
-                  ddState={DropdownHeaderStates.Open}
-                  list={priorAttendedEvents}
-                />
-              }
-            >
-              <div className="space-y-5">
-                {priorAttendedEvents.map(
-                  (attendedEvent: AttendedEvent, index: number) => (
-                    <AttendanceEvent event={attendedEvent} key={index} />
-                  )
-                )}
-              </div>
-              
-            </Collapsible>
-            <Collapsible
-              trigger={
-                <DropdownHeader
-                  text={"Today"}
-                  ddState={DropdownHeaderStates.Closed}
-                  list={todayAttendedEvents}
-                />
-              }
-              triggerWhenOpen={
-                <DropdownHeader
-                  text={"Today"}
-                  ddState={DropdownHeaderStates.Open}
-                  list={todayAttendedEvents}
-                />
-              }
-            >
-              <div className="space-y-5">
-                {todayAttendedEvents.map(
-                  (attendedEvent: AttendedEvent, index: number) => (
-                    <AttendanceEvent event={attendedEvent} key={index} />
-                  )
-                )}
-              </div>
-            </Collapsible>
-            <Collapsible
-              trigger={
-                <DropdownHeader
-                  text={"Upcoming Events"}
-                  ddState={DropdownHeaderStates.Closed}
-                  list={upcomingAttendedEvents}
-                />
-              }
-              triggerWhenOpen={
-                <DropdownHeader
-                  text={"Upcoming Events"}
-                  ddState={DropdownHeaderStates.Open}
-                  list={upcomingAttendedEvents}
-                />
-              }
-            >
-              <div className="space-y-5">
-                {upcomingAttendedEvents.map(
-                  (attendedEvent: AttendedEvent, index: number) => (
-                    <AttendanceEvent event={attendedEvent} key={index} />
-                  )
-                )}
-              </div>
-            </Collapsible>
-          </>
-        )}
-      </div>
+
+      {student?.attendance.length === 0 ? (
+        <h4 className="no-found small-glass">No Events Attended</h4>
+      ) : (
+        <>
+          <Collapsible
+            trigger={
+              <DropdownHeader
+                text={"Prior Events"}
+                ddState={DropdownHeaderStates.Closed}
+                list={priorEvents}
+              />
+            }
+            triggerWhenOpen={
+              <DropdownHeader
+                text={"Prior Events"}
+                ddState={DropdownHeaderStates.Open}
+                list={priorEvents}
+              />
+            }
+          >
+            <div className="space-y-5">
+              {priorEvents.map(
+                (event: Event, index: number) => (
+                  <AttendanceEvent event={event} student={student} key={index} />
+                )
+              )}
+            </div>
+            
+          </Collapsible>
+          <Collapsible
+            trigger={
+              <DropdownHeader
+                text={"Today"}
+                ddState={DropdownHeaderStates.Closed}
+                list={todayEvents}
+              />
+            }
+            triggerWhenOpen={
+              <DropdownHeader
+                text={"Today"}
+                ddState={DropdownHeaderStates.Open}
+                list={todayEvents}
+              />
+            }
+          >
+            <div className="space-y-5">
+              {todayEvents.map(
+                (event: Event, index: number) => (
+                  <AttendanceEvent event={event} student={student} key={index} />
+                )
+              )}
+            </div>
+          </Collapsible>
+          <Collapsible
+            trigger={
+              <DropdownHeader
+                text={"Upcoming Events"}
+                ddState={DropdownHeaderStates.Closed}
+                list={upcomingEvents}
+              />
+            }
+            triggerWhenOpen={
+              <DropdownHeader
+                text={"Upcoming Events"}
+                ddState={DropdownHeaderStates.Open}
+                list={upcomingEvents}
+              />
+            }
+          >
+            <div className="space-y-5">
+              {upcomingEvents.map(
+                (event: Event, index: number) => (
+                  <AttendanceEvent event={event} student={student} key={index} />
+                )
+              )}
+            </div>
+          </Collapsible>
+        </>
+      )}
     </main>
   );
 };
 
-const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event }) => {
+const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event, student }) => {
+
+  const [attendedEvent, setAttendedEvent] = useState<AttendedEvent>();
+
+  useEffect(() => {
+    getAttendedEvent();
+  }, [event, student]);
+
+  const getAttendedEvent = () => {
+    student?.attendance.forEach((attendedEvent) => {
+      if (event.code === attendedEvent.code) {
+        setAttendedEvent({
+          code: event.code,
+          didAttend: attendedEvent.didAttend,
+          localEventName: attendedEvent.localEventName,
+          projectHours: attendedEvent.projectHours,
+          startDate: attendedEvent.startDate
+        });
+      }
+    });
+  }
+
   return (
     <div className="bg-white/60 p-3 rounded-2xl flex flex-col items-center space-y-3">
-      <h4 className="text-xl text-center font-bold">{event.localEventName}</h4>
-      <h4>{event.startDate ? event.startDate.toDate().toLocaleDateString("en-US") : ""}</h4>
+      <h4 className="text-xl text-center font-bold">{event.name}</h4>
+      <h4>{event.startDate ? event.startDate.toLocaleDateString("en-US") : ""}</h4>
       <div className="flex space-x-3">
-        <p className={event.didAttend ? "bg-emerald-400 text-white font-bold w-fit rounded-full p-0.5 px-2" : "bg-red-400 text-white font-bold w-fit rounded-full p-0.5 px-2"}>
-          {event.didAttend ? "Present" : "Absent"}
+        <p className={attendedEvent?.didAttend ? "bg-emerald-400 text-white font-bold w-fit rounded-full p-0.5 px-2" : "bg-red-400 text-white font-bold w-fit rounded-full p-0.5 px-2"}>
+          {attendedEvent?.didAttend ? "Present" : "Absent"}
         </p>
-        {event.projectHours ? (
+        {attendedEvent?.projectHours ? (
               <p className="bg-blue-400 rounded-full py-0.5 px-3 w-fit text-white space-x-2">
-                <strong className="honor-point-value">{event.projectHours}</strong>
+                <strong className="honor-point-value">{attendedEvent?.projectHours}</strong>
                 <i className="far fa-clock"></i>
               </p>
           
@@ -157,7 +179,6 @@ const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event }) => {
           ""
         )}
       </div>
-     
     </div>
   );
 };

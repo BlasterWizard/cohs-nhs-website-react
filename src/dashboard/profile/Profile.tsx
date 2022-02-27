@@ -58,7 +58,7 @@ const Profile: React.FC<ProfileProps> = ({ user, student, isLoading }) => {
           If you find a <strong>bug</strong> or have any <strong>suggestions</strong>,
           it would be an awesome help if you could report it here!:
         </h5>
-        <a className="block bg-indigo-300 hover:bg-indigo-400 hover:scale-120 p-2 rounded-full m-2 text-white font-bold w-fit" href="https://forms.gle/f4i5YVGBjrNChss37" target="_blank" rel="noopener noreferrer">
+        <a className="block bg-indigo-300 hover:bg-indigo-400 hover:scale-120 p-2 rounded-full m-2 text-white font-bold w-fit text-center" href="https://forms.gle/f4i5YVGBjrNChss37" target="_blank" rel="noopener noreferrer">
             Bug & Suggestion Report Form 
         </a>
       </div>

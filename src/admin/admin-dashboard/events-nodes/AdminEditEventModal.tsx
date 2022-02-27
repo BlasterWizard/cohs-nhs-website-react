@@ -181,7 +181,7 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
     <>
       <Modal scrollable={true} show={show} onHide={handleShow} centered>
         <Modal.Header>
-          <Modal.Title>Review Proposed Changes</Modal.Title>
+          <Modal.Title>Edit Event</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>

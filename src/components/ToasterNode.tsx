@@ -21,7 +21,7 @@ const ToasterNode = () => {
                 {message}
                 {
                   <button
-                    className="close-toast"
+                    className="bg-white/60 py-0.5 px-2 rounded-full"
                     onClick={() => toast.dismiss(t.id)}
                   >
                     <i className="fas fa-times"></i>

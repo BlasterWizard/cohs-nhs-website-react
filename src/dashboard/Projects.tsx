@@ -5,26 +5,23 @@ import DashboardPagination, {
   DashboardPaginationKeys,
 } from "../components/DashboardPagination";
 import { Button, Modal } from "react-bootstrap";
+import { Timestamp } from "firebase/firestore";
 
 export interface ProjectsProps {
   student: Student | undefined;
   isLoading: boolean;
-  getStudentNameFromID: (id: string) => string;
+  getStudentObjectFromID: (id: string) => Student | undefined;
 }
 
 interface ProjectViewAndModalProps {
   project: Project;
   show: boolean;
   handleClose: () => void;
-  getStudentNameFromID: (id: string) => string;
+  getStudentObjectFromID: (id: string) => Student | undefined;
 }
 
-const Projects: React.FC<ProjectsProps> = ({ student, isLoading, getStudentNameFromID }) => {
+const Projects: React.FC<ProjectsProps> = ({ student, isLoading, getStudentObjectFromID }) => {
   const [modalShow, setModalShow] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log(student?.myProjects);
-  }, [student]);
 
   const toggleModalShow = () => {
     modalShow ? setModalShow(false) : setModalShow(true);
@@ -46,24 +43,25 @@ const Projects: React.FC<ProjectsProps> = ({ student, isLoading, getStudentNameF
         <h4 className="no-found small-glass">No Projects Found</h4>
       ) : (
         student?.myProjects.map((ledProject: Project, index: number) => {
-          return <button onClick={toggleModalShow} key={index}><ProjectView project={ledProject} show={modalShow} handleClose={toggleModalShow} getStudentNameFromID={getStudentNameFromID} key={index}/></button>;
+          return <button onClick={toggleModalShow} key={index}><ProjectView project={ledProject} show={modalShow} handleClose={toggleModalShow} getStudentObjectFromID={getStudentObjectFromID} key={index}/></button>;
         })
       )}
     </main>
   );
 };
 
-const ProjectView: React.FC<ProjectViewAndModalProps> = ({project, show, handleClose, getStudentNameFromID}) => {
+const ProjectView: React.FC<ProjectViewAndModalProps> = ({project, show, handleClose, getStudentObjectFromID}) => {
   return (
     <div className="bg-white/60 p-20 rounded-lg hover:drop-shadow-2xl hover:bg-sky-100">
       <h4 className="text-xl font-bold">{project.projectName}</h4>
-      <ProjectDetailModal project={project} show={show} handleClose={handleClose} getStudentNameFromID={getStudentNameFromID}/>
+      <p>{new Date(project.dates[0].toDate()).toLocaleDateString()} - {new Date(project.dates[project.dates.length - 1].toDate()).toLocaleDateString()}</p>
+      <ProjectDetailModal project={project} show={show} handleClose={handleClose} getStudentObjectFromID={getStudentObjectFromID}/>
     </div>
 
   );
 };
 
-const ProjectDetailModal: React.FC<ProjectViewAndModalProps> = ({project, show, handleClose, getStudentNameFromID}) => {
+export const ProjectDetailModal: React.FC<ProjectViewAndModalProps> = ({project, show, handleClose, getStudentObjectFromID}) => {
   return (
     <div>
       <Modal scrollable={true} show={show} centered>
@@ -74,14 +72,22 @@ const ProjectDetailModal: React.FC<ProjectViewAndModalProps> = ({project, show, 
         </Modal.Header>
         <Modal.Body>
           <div className="py-2">
+            <h3 className="font-bold">Project Dates:</h3>
+              {
+                project.dates.map((timestamp: Timestamp, index: number) => {
+                  return <p key={index}>{new Date(timestamp.toDate()).toLocaleDateString()}</p>
+                })
+              }
+          </div>
+
+          <hr/>
+
+          <div className="py-2">
             <h3 className="font-lg font-bold">Project Leaders:</h3>
             {
-              project.leaders.map((leader: string, index: number) => {
-                if (!isNaN(parseInt(leader))) {
-                  const studentLeaderName = getStudentNameFromID(leader);
-                  return <h4 key={index}>{studentLeaderName}</h4>
-                }
-                return <h4 key={index}>{leader}</h4>
+              project.leaders.map((leaderDocID: string, index: number) => {
+                  const studentObj = getStudentObjectFromID(leaderDocID);
+                  return <h4 key={index}>{studentObj?.name}</h4>
               })
             }
           </div>
@@ -111,5 +117,4 @@ const ProjectDetailModal: React.FC<ProjectViewAndModalProps> = ({project, show, 
     </div>
   );
 }
-
 export default Projects;

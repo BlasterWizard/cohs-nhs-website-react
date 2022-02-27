@@ -88,7 +88,6 @@ const Dashboard: React.FC<DashboardProps> = ({
       <TableStats
         student={student}
         totalProjectHours={totalProjectHours}
-        totalMandatoryEvents={totalMandatoryEvents}
         totalMandatoryAttendedEvents={totalMandatoryAttendedEvents}
       />
     </main>

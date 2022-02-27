@@ -63,7 +63,7 @@ const StudentNode: React.FC<StudentNodeProps> = ({ student }) => {
     };
   
     return (
-      <div className="bg-indigo-100 w-1/2 py-2 px-4 rounded-2xl flex flex-row space-x-4 items-center">
+      <div className="bg-indigo-100 sm:w-1/2 py-2 px-4 rounded-2xl flex flex-row space-x-4 items-center">
          <p className="bg-blue-300 py-1 px-2 rounded-full font-bold flex items-center text-sm">
           {studentGradeText}
         </p>

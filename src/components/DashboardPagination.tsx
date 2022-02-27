@@ -15,19 +15,20 @@ export enum DashboardPaginationKeys {
 
 const DashboardPagination: React.FC<DashboardPaginationProps> = ({defaultActiveKey}) => {
   return (
-        <div className="bg-white/60 p-3 rounded-full m-3">
-            <Nav variant="pills" defaultActiveKey={defaultActiveKey} className="flex space-x-5">
+    // bg-white/60 p-3 rounded-full m-3
+        <div className="bg-white/60 rounded-2xl p-3 m-3">
+            <Nav variant="pills" defaultActiveKey={defaultActiveKey} className="flex flex-col sm:flex-row items-center">
                 <Nav.Item>
-                    <Nav.Link eventKey="dashboard" href="/dashboard">Dashboard</Nav.Link>
+                    <Nav.Link eventKey="dashboard" href="/dashboard" className="text-sm sm:text-lg">Dashboard</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="attendance" href="/attendance">Attendance</Nav.Link>
+                    <Nav.Link eventKey="attendance" href="/attendance" className="text-sm sm:text-lg">Attendance</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="projects" href="/projects">Projects</Nav.Link>
+                    <Nav.Link eventKey="projects" href="/projects" className="text-sm sm:text-lg">Projects</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="profile" href="/profile">Profile</Nav.Link>
+                    <Nav.Link eventKey="profile" href="/profile" className="text-sm sm:text-lg">Profile</Nav.Link>
                 </Nav.Item>
             </Nav>
         </div>
