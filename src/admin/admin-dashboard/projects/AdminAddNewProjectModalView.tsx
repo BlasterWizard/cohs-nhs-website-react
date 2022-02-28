@@ -103,15 +103,6 @@ const AdminAddNewProjectModalView: React.FC<AdminAddNewProjectModalViewProps> = 
         }
     }
 
-    const findStudentIDFromName = (name: string): string | null => {
-        for(var i = 0; i < students.length; i++) {
-            if (students[i].name === name) {
-                return students[i].specialId;
-            }
-        }
-        return null
-    }
-
     async function addProject() {
         projectLeadersDocID.forEach(async (projectLeaderDocID) => {
             await updateDoc(doc(db, "users", projectLeaderDocID), {
@@ -125,12 +116,10 @@ const AdminAddNewProjectModalView: React.FC<AdminAddNewProjectModalViewProps> = 
                 })
             }).then(() => {
                 handleClose();
-                toast.success("Project added");
             }).catch((error) => {
                 toast.error(error.message);
             });
         });
-        
     }
 
     return (
@@ -223,14 +212,14 @@ const AdminAddNewProjectModalView: React.FC<AdminAddNewProjectModalViewProps> = 
     );
 }
 
-const AdminProjectDateView: React.FC<AdminProjectDateViewProps> = ({projectDate, projectDates, index, setProjectDates}) => {
+export const AdminProjectDateView: React.FC<AdminProjectDateViewProps> = ({projectDate, projectDates, index, setProjectDates}) => {
 
     const deleteSelectedProjectDate = () => {
         setProjectDates(projectDates => projectDates.filter((pd) => pd.getTime() !== projectDate.getTime()));
     }
 
     return (
-        <div className="flex space-x-1 bg-slate-200 p-1 rounded-full">
+        <div className="flex space-x-1 bg-slate-200 p-1 rounded-lg">
             <p>{projectDate.toLocaleDateString()}</p>
             <button className="bg-red-500 px-1 rounded-full text-white" onClick={deleteSelectedProjectDate}>
                 <i className="fas fa-minus"></i>

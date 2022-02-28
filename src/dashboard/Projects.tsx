@@ -40,7 +40,7 @@ const Projects: React.FC<ProjectsProps> = ({ student, isLoading, getStudentObjec
       ></DashboardPagination>
 
       {student?.myProjects && student?.myProjects.length === 0 ? (
-        <h4 className="no-found small-glass">No Projects Found</h4>
+        <h4 className="font-bold m-10 bg-white/60 rounded-full p-2">No Projects Found</h4>
       ) : (
         student?.myProjects.map((ledProject: Project, index: number) => {
           return <button onClick={toggleModalShow} key={index}><ProjectView project={ledProject} show={modalShow} handleClose={toggleModalShow} getStudentObjectFromID={getStudentObjectFromID} key={index}/></button>;

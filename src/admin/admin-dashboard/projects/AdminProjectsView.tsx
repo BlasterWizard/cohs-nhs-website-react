@@ -6,17 +6,21 @@ import toast from 'react-hot-toast';
 import { Project, Student } from '../../../App';
 import { ProjectDetailModal } from '../../../dashboard/Projects';
 import db from '../../../firebase';
+import AdminEditProjectView from './AdminEditProjectView';
+
 
 interface AdminProjectsViewProps {
     allProjects: Project[];
     show: boolean;
     handleClose: () => void;
     getStudentObjectFromID: (id: string) => Student | undefined;
+    students: Student[];
 }
 
 interface AdminProjectViewProps {
     project: Project;
     getStudentObjectFromID: (id: string) => Student | undefined;
+    students: Student[];
 }
 
 interface AdminDeleteProjectConfirmationModalProps {
@@ -26,7 +30,9 @@ interface AdminDeleteProjectConfirmationModalProps {
     getStudentObjectFromID: (id: string) => Student | undefined;
 }
 
-const AdminProjectsView: React.FC<AdminProjectsViewProps> = ({ allProjects , show, handleClose, getStudentObjectFromID }) => {
+
+
+const AdminProjectsView: React.FC<AdminProjectsViewProps> = ({ allProjects , show, handleClose, getStudentObjectFromID, students }) => {
     return (
     <Modal size="lg" centered show={show} scrollable={true}>
         <Modal.Header>
@@ -35,9 +41,9 @@ const AdminProjectsView: React.FC<AdminProjectsViewProps> = ({ allProjects , sho
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <div className="space-y-3">
+            <div className="space-y-3 flex flex-col items-center">
             {allProjects.length > 0 ? allProjects.map((project: Project, index: number) => (
-                <AdminProjectView project={project} key={index} getStudentObjectFromID={getStudentObjectFromID} />
+                <AdminProjectView project={project} key={index} getStudentObjectFromID={getStudentObjectFromID} students={students}/>
             )) : <p className="font-bold text-center">No Projects</p>}
             </div>
         </Modal.Body>
@@ -49,9 +55,10 @@ const AdminProjectsView: React.FC<AdminProjectsViewProps> = ({ allProjects , sho
     );
 }
 
-const AdminProjectView: React.FC<AdminProjectViewProps> = ({project, getStudentObjectFromID}) => {
+const AdminProjectView: React.FC<AdminProjectViewProps> = ({project, getStudentObjectFromID, students}) => {
     const [showProjectDetailModal, setShowProjectDetailModal] = useState(false);
     const [showConfirmDeleteProjectModal, setShowConfirmDeleteProjectModal] = useState(false);
+    const [showProjectEditModal, setShowProjectEditModal] = useState(false);
 
     const toggleShowProjectDetailModal = () => {
         showProjectDetailModal ? setShowProjectDetailModal(false) : setShowProjectDetailModal(true);
@@ -61,31 +68,36 @@ const AdminProjectView: React.FC<AdminProjectViewProps> = ({project, getStudentO
         showConfirmDeleteProjectModal ? setShowConfirmDeleteProjectModal(false) : setShowConfirmDeleteProjectModal(true);
     }
 
+    const toggleShowProjectEditModal = () => {
+        showProjectEditModal ? setShowProjectEditModal(false) : setShowProjectEditModal(true);
+    }
+
     return (
-        <div className="bg-indigo-100 p-2 rounded-lg flex flex-row w-full items-center">
-            <strong className="text-sm sm:text-lg">{project.projectName}</strong>
+        <div className="bg-indigo-100 p-2 rounded-lg flex flex-row w-3/4 items-center">
+            <strong>{project.projectName}</strong>
     
             <div className="flex-grow"></div>
     
-            <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 items-center justify-center sm:space-x-3">
-            <button
-                className="bg-sky-300 hover:bg-sky-400 rounded-full p-1 px-2"
-                onClick={toggleShowProjectDetailModal}
-            >
-                <h3 className="text-white font-bold">Info</h3>
-            </button>
-            <button
-                className="bg-rose-400 hover:bg-rose-500 rounded-full px-2.5"
-                onClick={toggleShowConfirmDeleteProjectModal}
-            >
-                <i className="fas fa-minus text-white"></i>
-            </button>
-            <button className="bg-indigo-400 hover:bg-indigo-500 py-0.5 px-2 rounded-full text-white">
-                <h3 className="font-bold">Edit</h3>
-            </button>
+            <div className="flex space-x-3">
+                <button
+                    className="bg-sky-300 hover:bg-sky-400 rounded-full p-1 px-2"
+                    onClick={toggleShowProjectDetailModal}
+                >
+                    <h3 className="text-white font-bold">Info</h3>
+                </button>
+                <button
+                    className="bg-rose-400 hover:bg-rose-500 rounded-full px-2.5"
+                    onClick={toggleShowConfirmDeleteProjectModal}
+                >
+                    <i className="fas fa-minus text-white"></i>
+                </button>
+                <button className="bg-indigo-400 hover:bg-indigo-500 py-0.5 px-2 rounded-full text-white" onClick={toggleShowProjectEditModal}>
+                    <h3 className="font-bold">Edit</h3>
+                </button>
             </div>
             <ProjectDetailModal show={showProjectDetailModal} handleClose={toggleShowProjectDetailModal} project={project} getStudentObjectFromID={getStudentObjectFromID} />
             <AdminDeleteProjectConfirmationModal show={showConfirmDeleteProjectModal} handleClose={toggleShowConfirmDeleteProjectModal} project={project} getStudentObjectFromID={getStudentObjectFromID}/>
+            <AdminEditProjectView show={showProjectEditModal} handleClose={toggleShowProjectEditModal} students={students} project={project} getStudentObjectFromID={getStudentObjectFromID}/>
       </div>
     );
 }
@@ -137,6 +149,8 @@ const AdminDeleteProjectConfirmationModal: React.FC<AdminDeleteProjectConfirmati
         </Modal>
     );
 }
+
+
 
 
 export default AdminProjectsView;

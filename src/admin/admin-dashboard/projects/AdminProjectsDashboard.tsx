@@ -62,7 +62,7 @@ const AdminProjectsDashboard: React.FC<AdminProjectsDashboardProps> = ({students
                 </button>
             </div>
             <AdminAddNewProjectModalView show={showAddNewProjectModal} handleClose={toggleShowAddNewProjectModal} students={students}/>
-            <AdminProjectsView show={showProjects} handleClose={toggleShowProjects} allProjects={allProjects} getStudentObjectFromID={getStudentObjectFromID}/>
+            <AdminProjectsView show={showProjects} handleClose={toggleShowProjects} allProjects={allProjects} getStudentObjectFromID={getStudentObjectFromID} students={students}/>
         </div>
     );
 }

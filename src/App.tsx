@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Badge, Nav, Navbar } from "react-bootstrap";
 import { Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
@@ -19,6 +19,7 @@ import Projects from "./dashboard/Projects";
 import AdminDashboard from "./admin/admin-dashboard/AdminDashboard";
 import AdminSettings from "./admin/AdminSettings";
 import AdminAttendance from "./admin/admin-attendance/AdminAttendance";
+import AdminProjectHours from "./admin/admin-projecthours/AdminProjectsHours";
 
 
 export interface Event {
@@ -158,7 +159,7 @@ function App() {
   const signoutHandler = () => {
     signOut(auth).then(() => {
       // Sign-out successful.
-      window.location.href = "/home";
+      window.location.href = "/";
     }).catch((error) => {
       toast.error(error.message);
     });
@@ -318,13 +319,11 @@ function App() {
               students={students}
               isLoading={loading}
             />}></Route>
-        <Route path="/admin-projects/NHS">
-            {/* <AdminProjects
+        <Route path="/admin-projects/NHS" element={<AdminProjectHours
               events={events}
               students={students}
               isLoading={loading}
-            /> */}
-        </Route>
+            />}></Route>
         <Route path="/admin-projects/non-NHS">
           {/* <AdminNonNHSProjects /> */}
         </Route>

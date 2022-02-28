@@ -27,26 +27,25 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
 
     return (
       <div className="bg-white/60 rounded-lg p-4">
-        <table className="table-fixed">
-          <tbody>
-            <tr className="bg-slate-400/30">
-              <td className="font-bold">Total Project Hours:</td>
-              <td>{totalProjectHours}</td>
-            </tr>
-            <tr>
-              <td className="font-bold">Total Events Attended:</td>
-              <td>{totalEventsAttended}</td>
-            </tr>
-            <tr className="bg-slate-400/30">
-              <td className="font-bold">Mandatory NHS Events Attended:</td>
-              <td>{totalMandatoryAttendedEvents}</td>
-            </tr>
-            <tr>
-              <td className="font-bold">Non NHS Events Attended:</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
+          <div className="bg-slate-400/30 space-x-2 flex p-1">
+            <p className="font-bold">Total Project Hours:</p>
+            <div className="flex-grow"></div>
+            <p>{totalProjectHours}</p>
+          </div>
+          <div className="space-x-2 flex p-1">
+            <p className="font-bold">Total Events Attended:</p>
+            <div className="flex-grow"></div>
+            <p>{totalEventsAttended}</p>
+          </div>
+          <div className="bg-slate-400/30 space-x-2 flex p-1">
+            <p className="font-bold">Mandatory NHS Events Attended:</p>
+            <div className="flex-grow"></div>
+            <p>{totalMandatoryAttendedEvents}</p>
+          </div>
+          {/* <tr>
+            <td className="font-bold">Non NHS Events Attended:</td>
+            <td></td>
+          </tr> */}
       </div>
       
     );

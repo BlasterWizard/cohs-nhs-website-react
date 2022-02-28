@@ -7,7 +7,6 @@ import AdminPagination, {
 } from "../../components/AdminPagination";
 import SpinnerNode from "../../components/Spinner";
 import StudentRow from "./StudentRow";
-import toast from "react-hot-toast";
 import AdminAttendanceChangesModal from "./AdminAttendanceChangesModal";
 
 interface AdminAttendanceProps {
@@ -70,7 +69,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
 
   return (
     <main>
-      <h2 className="text-4xl font-bold">Admin Attendance</h2>
+      <h2 className="text-4xl font-bold">Attendance</h2>
       <AdminPagination defaultActiveKey={AdminPaginationKeys.AdminAttendance} />
       <div className="absolute sticky left-5 top-5">
         <p

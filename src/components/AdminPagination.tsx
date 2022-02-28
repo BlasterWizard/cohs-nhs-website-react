@@ -18,7 +18,7 @@ const AdminPagination: React.FC<AdminPaginationProps> = ({defaultActiveKey}) => 
         <div className="bg-white/60 rounded-2xl p-3 m-3">
             <Nav variant="pills" defaultActiveKey={defaultActiveKey} className="flex flex-col sm:flex-row items-center">
                 <Nav.Item>
-                    <Nav.Link eventKey="admin-dashboard" href="/admin-dashboard">Adminboard</Nav.Link>
+                    <Nav.Link eventKey="admin-dashboard" href="/admin-dashboard">Dashboard</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                     <Nav.Link eventKey="admin-attendance" href="/admin-attendance">Attendance</Nav.Link>

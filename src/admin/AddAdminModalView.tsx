@@ -75,7 +75,7 @@ const AddAdminModalView: React.FC<AddAdminModalViewProps> = ({
         </Modal.Header>
         <Modal.Body>
             <div className="mb-10">
-                <p className="font-bold">New Event Authors:</p>
+                <p className="font-bold">Select Student:</p>
                 <Select
                     closeMenuOnSelect={false}
                     isMulti

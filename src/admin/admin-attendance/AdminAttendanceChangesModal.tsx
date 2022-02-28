@@ -56,9 +56,9 @@ const AdminAttendanceChangesModal: React.FC<AdminAttendanceChangesModalProps> =
           </Modal.Header>
           <Modal.Body>
             <div className="space-y-3">
-              {changes.map((change, index) => (
+              {changes.length > 0 ? changes.map((change, index) => (
                 <AttendanceChangeNode change={change} changes={changes} key={index} setChanges={setChanges}/>
-              ))}
+              )) : <p className="font-bold text-center">No Changes</p>}
             </div>         
           </Modal.Body>
           <Modal.Footer>
