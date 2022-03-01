@@ -33,7 +33,7 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
 
   useEffect(() => {
     createSelectionOptions();
-  }, []); 
+  }, [students, eventList]); 
 
   const eventNameHandler = (e: any) => {
     setEventName(e.target.value);
@@ -207,8 +207,7 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
           </div>
           <hr/>
           <div>
-            <p className="font-bold">Event Hosts:</p>
-              <Form.Label className="font-bold">New Event Authors:</Form.Label>
+              <Form.Label className="font-bold">Event Hosts:</Form.Label>
               <Select
                 closeMenuOnSelect={false}
                 isMulti

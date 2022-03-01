@@ -67,28 +67,19 @@ const AdminAnnouncementNode: React.FC<AdminAnnouncementNodeProps> = ({
     }
   
     return (
-      <div className="bg-indigo-200 p-3 rounded-2xl w-1/2 flex items-center">
-        <p className="bg-blue-400 py-0.5 px-2 rounded-full w-fit font-bold text-white">
+      <div className="bg-indigo-100 rounded-2xl py-3 flex-col">
+        <div className="flex items-center px-5 space-x-3">
+          <p className="bg-indigo-300 rounded-full py-0.5 px-2 font-bold text-white w-fit">
             {announcement.author}
-        </p>
-
-        <div className="flex-grow"></div>
-           
-        <div className="flex flex-col items-center">
-        <h4>
-            <strong>{announcement.title}</strong>
-        </h4>
-        <h6>{announcement.content}</h6>
-        <h6>Author: {announcement.author}</h6>
+          </p>
+          <div className="flex-grow"></div>
+          <h4 className="font-bold text-center">{announcement.title}</h4>
+          <div className="flex-grow"></div>
+          <button className="bg-red-500 px-2 py-0.5 rounded-full text-white" onClick={deleteAdminAnnouncementNode}>
+            <i className="fas fa-times"></i>
+          </button>
         </div>
-
-        <div className="flex-grow"></div>
-        
-        <button className="bg-red-500 py-0.5 px-2 rounded-full text-white" onClick={deleteAdminAnnouncementNode}>
-        <i className="fas fa-minus"></i>
-        </button>
-       
-        
+        <h6 className="px-5 text-center">{announcement.content}</h6>
       </div>
     );
   };

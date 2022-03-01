@@ -5,6 +5,7 @@ import db from "../../../firebase";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { Button, Modal } from "react-bootstrap";
 import AdminEventDetailView from "./AdminEventDetailView";
+import toast from "react-hot-toast";
 
 interface AdminEventNodeProps {
   event: Event;
@@ -67,18 +68,32 @@ const AdminEventNode: React.FC<AdminEventNodeProps> = ({ event, students, getStu
 
   async function deleteEvent() {
     console.log(event.docId);
-    await deleteDoc(doc(db, "events-Data", event.docId));
+    await deleteDoc(doc(db, "events-Data", event.docId)).then(() => {
+      toast.success("Event successfully deleted");
+    }).catch((error) => { 
+      toast.error(error.message);
+    });
 
     //delete Event from every student
     students.forEach(async (student) => {
-      const studentAttendance = student.attendance.filter(
-        (el) => el.code !== event.code
-      );
-      await updateDoc(doc(db, "students", student.docId), {
-        attendance: studentAttendance,
-      });
+      if (findIfEventIsInStudentAttendance(student, event)) {
+        const studentAttendance = student.attendance.filter(
+          (el) => el.code !== event.code
+        );
+        await updateDoc(doc(db, "users", student.docId), {
+          attendance: studentAttendance,
+        });
+      }
     });
-    console.log("deleted!");
+  }
+
+  const findIfEventIsInStudentAttendance = (student: Student, event: Event): boolean => {
+    for (var i = 0; i < student.attendance.length; i++) {
+      if (student.attendance[i].code === event.code) {
+        return true;
+      }
+    }
+    return false;
   }
 
   return (

@@ -18,8 +18,8 @@ const Announcements: React.FC<AnnouncementsProps> = ({student }) => {
     useEffect(() => {
     });
     return (
-      <div className="projects-list glass">
-        <h2 className="text-2xl font-bold">Announcements</h2>
+      <div className="space-y-3 m-3">
+        <h2 className="text-2xl font-bold text-center">Announcements</h2>
         {student?.announcements.map((announcement: Announcement, index: number) => (
           <AnnouncementNode announcement={announcement} student={student} key={index} />
         ))}
@@ -50,19 +50,19 @@ const Announcements: React.FC<AnnouncementsProps> = ({student }) => {
     };
   
     return (
-      <div className="dashboard-glass announcement">
-        <div className="announcement-top-heading">
-          <Badge pill className="primary-badge">
+      <div className="bg-white/60 rounded-2xl py-3 flex-col">
+        <div className="flex items-center px-5 space-x-3">
+          <p className="bg-indigo-300 rounded-full py-0.5 px-2 font-bold text-white w-fit">
             {announcement.author}
-          </Badge>
-          <button className="close-toast" onClick={deleteAnnouncementNode}>
+          </p>
+          <div className="flex-grow"></div>
+          <h4 className="font-bold text-center">{announcement.title}</h4>
+          <div className="flex-grow"></div>
+          <button className="bg-red-500 px-2 py-0.5 rounded-full text-white" onClick={deleteAnnouncementNode}>
             <i className="fas fa-times"></i>
           </button>
         </div>
-        <div className="announcement-body">
-          <h4 className="title">{announcement.title}</h4>
-          <h6>{announcement.content}</h6>
-        </div>
+        <h6 className="px-5 text-center">{announcement.content}</h6>
       </div>
     );
   };

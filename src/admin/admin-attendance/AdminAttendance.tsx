@@ -44,6 +44,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    console.log(events);
     setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
   }, [students, events]);
 
@@ -56,16 +57,16 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
     return <SpinnerNode />;
   }
 
-  const changeStudentSortingOrder = () => {
-    sortingOrderButtonState
-      ? setStudentList(
-          studentList.sort((a, b) =>
-            b.name.split(" ")[1].localeCompare(a.name.split(" ")[1])
-          )
-        )
-      : setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
-    setSortingOrderButtonState(!sortingOrderButtonState);
-  };
+  // const changeStudentSortingOrder = () => {
+  //   sortingOrderButtonState
+  //     ? setStudentList(
+  //         studentList.sort((a, b) =>
+  //           b.name.split(" ")[1].localeCompare(a.name.split(" ")[1])
+  //         )
+  //       )
+  //     : setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
+  //   setSortingOrderButtonState(!sortingOrderButtonState);
+  // };
 
   return (
     <main>

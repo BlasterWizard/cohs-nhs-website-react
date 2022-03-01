@@ -71,6 +71,7 @@ export interface Student {
   docId: string;
   officerDescription?: OfficerDescription;
   studentUID: string;
+  userImage?: string
 }
 
 export interface OfficerDescription {
@@ -97,6 +98,7 @@ function App() {
 
 
   useEffect(() => {
+    fetchAllStudentsFromFirestore();
     authUser();
   }, [user]);
 
@@ -108,7 +110,6 @@ function App() {
         console.log(user);
         setUser(user);
         // setIsAuthenticating(false);
-        fetchAllStudentsFromFirestore();
         fetchEventsFromFirestore();
         fetchAnnouncementsFromFirestore();
         fetchSettings();
@@ -194,7 +195,7 @@ function App() {
         description: description,
         eventHosts: hosts
       });
-      items.sort((a, b) => a.code.localeCompare(b.code));
+      items.sort((a, b) => a.startDate.getTime()-b.startDate.getTime());
     });
     setEvents(items);
     });
@@ -219,7 +220,8 @@ function App() {
             specialId: studentData.specialId,
             announcements: studentData.announcements,
             docId: doc.id,
-            studentUID: studentData.UID ? studentData.UID : "",
+            studentUID: studentData.UID ?? "",
+            userImage: studentData.userImage ?? ""
           };
           items.push(studentObj);
   
@@ -292,15 +294,16 @@ function App() {
       {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
       <Routes>
-        <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <Signup students={students}/>}> </Route>
+        <Route path="/signup" element={user && student ? <Navigate to="/dashboard" /> : <Signup students={students}/>}> </Route>
         <Route path="/calendar" element={ <Calendar isLoading={loading} events={events} />}></Route>
         <Route path="/officers" element={<Officers />}></Route>
         <Route path="/faqs" element={<FAQs />}></Route>
-        <Route path="/dashboard" element={<Dashboard
+        <Route path="/dashboard" element={
+            <Dashboard
               student={student}
               isLoading={loading}
               events={events}
-            />}></Route>
+            /> }></Route>
         <Route path="/attendance" element={<Attendance isLoading={loading} student={student} events={events}/>}></Route>
         <Route path="/projects" element={<Projects student={student} isLoading={loading}  getStudentObjectFromID={getStudentObjectFromID}/>}></Route>
         <Route path="/profile" element={<Profile user={user} student={student} isLoading={loading} />}></Route>

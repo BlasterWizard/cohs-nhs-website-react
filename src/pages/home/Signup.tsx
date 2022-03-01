@@ -4,7 +4,6 @@ import db from "../../firebase";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
 import { updateDoc, doc } from "firebase/firestore";
 import { Student } from "../../App";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
@@ -19,6 +18,10 @@ const Signup: React.FC<SignupProps> = ({students}) => {
   const [suConfirmPassword, setSuConfirmPassword] = useState<string>("");
   const [suFullName, setSuFullName] = useState<string>("");
   const [suStudentID, setSuStudentID] = useState<string>("");
+
+  useEffect(() => {
+    console.log(students);
+  }, []);
 
   const suEmailAddressHandler = (e: any) => {
     setSuEmailAddress(e.target.value);
@@ -59,13 +62,13 @@ const Signup: React.FC<SignupProps> = ({students}) => {
 
   async function checkStudentUIDFieldExists(
     user: any) {
-      console.log("studentUID");
+      console.log(students);
       for (const student of students) {
+        console.log(suStudentID);
+        console.log(student.specialId);
         if (student.specialId === suStudentID) {
-          console.log(student.specialId);
-          if (!student.studentUID && user) {
-            await updateDoc(doc(db, "users", student.docId), {studentUID: user.uid});
-          }
+          console.log("yoooo");
+          await updateDoc(doc(db, "users", student.docId), {studentUID: user.uid, docId: student.docId});
         }
       }
     }
@@ -104,6 +107,7 @@ const Signup: React.FC<SignupProps> = ({students}) => {
       }).catch((error) => {
         console.log(error.message);
       });
+      console.log(students);
   }
 
 
@@ -112,9 +116,9 @@ const Signup: React.FC<SignupProps> = ({students}) => {
     <div className="flex justify-center">
       <Form className="bg-white/60 p-5 m-5 rounded-lg w-1/2">
         <h2 className="text-2xl font-bold text-center">Sign Up</h2>
-        <div className="bg-white/60 p-2 rounded-lg m-1 flex">
-          <p className="m-2 px-2 py-1 bg-red-500 rounded-full flex items-center font-bold text-white">Important!</p>
-          <p>You must be registered before you can sign up! Please contact an officer if you are not yet registered.</p>
+        <div className="bg-white/60 p-2 rounded-lg m-1 flex items-center text-center justify-center">
+          <p className="m-2 px-2 py-0.5 bg-red-500 rounded-full flex items-center font-bold text-white">Important!</p>
+          <p>You must be registered before you can sign up! <br></br>Please contact an officer if you are not yet registered.</p>
         </div>
         {/* Email and Password */}
         <div className="space-y-5">

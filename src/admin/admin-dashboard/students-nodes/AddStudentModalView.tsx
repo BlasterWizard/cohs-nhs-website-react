@@ -47,9 +47,11 @@ const AddStudentModalView: React.FC<AddStudentModalViewProps> = ({
             isAdmin: false,
             myProjects: [],
             nonNHSHoursSubmitted: [],
+            userImage: ""
           };
 
           await addDoc(collection(db, "users"), newStudentData).then(() => {
+            handleClose();
             toast.success("Created new student");
           }).catch(() => {
             toast.error("Unable to create new student");
@@ -111,7 +113,7 @@ const AddStudentModalView: React.FC<AddStudentModalViewProps> = ({
           </Button>
           <Button
             className="bg-emerald-500 hover:bg-emerald-600 font-bold text-white"
-            onClick={handleClose}
+            onClick={addNewStudent}
           >
             Add Student
           </Button>
