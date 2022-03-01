@@ -95,6 +95,7 @@ function App() {
     seniorsRequiredHours: null,
     juniorsRequiredHours: null
   });
+  const localStorage = window.localStorage;
 
 
   useEffect(() => {
@@ -107,16 +108,15 @@ function App() {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        console.log(user);
         setUser(user);
-        // setIsAuthenticating(false);
         fetchEventsFromFirestore();
         fetchAnnouncementsFromFirestore();
         fetchSettings();
-        console.log("user logged in");
+        localStorage.setItem("isLoggedIn", "true");
       } else {
         // User is signed out
-        // setIsAuthenticating(false);
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("isAdmin");
       }
     });
   }
@@ -227,6 +227,7 @@ function App() {
   
           if (user?.uid != undefined && studentData.studentUID === user?.uid) {
             setStudent(studentObj);
+            localStorage.setItem("isAdmin", studentData.isAdmin ? "true" : "false");
           }
       });
       items = items.sort((a, b) => a.name.localeCompare(b.name));
@@ -263,24 +264,24 @@ function App() {
           </Badge>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav" className="flex flex-col sm:flex-row space-x-5 ml-4 items-center">
+        <Navbar.Collapse id="basic-navbar-nav" className="flex space-x-5 ml-4 items-center">
           <Nav className="mr-auto flex ml-4">
-            {!user && <Nav.Link href="/">Home</Nav.Link>} 
-            {user && <Nav.Link href="/calendar">Calendar</Nav.Link>}
-            {user && <Nav.Link href="/officers">Officers</Nav.Link>}
-            {user && <Nav.Link href="/faqs">FAQs</Nav.Link>}
-            {user && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
+            {!JSON.parse(localStorage.getItem("isLoggedIn")!) && <Nav.Link href="/">Home</Nav.Link>} 
+            {JSON.parse(localStorage.getItem("isLoggedIn")!) && <Nav.Link href="/calendar">Calendar</Nav.Link>}
+            {JSON.parse(localStorage.getItem("isLoggedIn")!) && <Nav.Link href="/officers">Officers</Nav.Link>}
+            {JSON.parse(localStorage.getItem("isLoggedIn")!) && <Nav.Link href="/faqs">FAQs</Nav.Link>}
+            {JSON.parse(localStorage.getItem("isLoggedIn")!) && <Nav.Link href="/dashboard">Dashboard</Nav.Link>}
           </Nav>
           <Nav className="flex-grow">
-          {!user && <Nav.Link href="/signup">Signup</Nav.Link>}
+          {!JSON.parse(localStorage.getItem("isLoggedIn")!) && <Nav.Link href="/signup">Signup</Nav.Link>}
           </Nav>
           <Nav className="space-x-5 flex flex-row items-center">
-            {user && (
+            {JSON.parse(localStorage.getItem("isLoggedIn")!) && (
               <Nav.Link className="bg-red-500 rounded-lg p-2">
                 <button onClick={signoutHandler}><p className="font-bold text-white">Logout</p></button>
               </Nav.Link>
             )}
-            {student?.isAdmin && user && (
+            {JSON.parse(localStorage.getItem("isAdmin")!) && JSON.parse(localStorage.getItem("isLoggedIn")!) && (
               <Nav.Link className="bg-emerald-300 font-bold rounded-lg p-2 text-center" href="/admin-dashboard">
                 Admin Portal
               </Nav.Link>
@@ -294,7 +295,7 @@ function App() {
       {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
       <Routes>
-        <Route path="/signup" element={user && student ? <Navigate to="/dashboard" /> : <Signup students={students}/>}> </Route>
+        <Route path="/signup" element={JSON.parse(localStorage.getItem("isLoggedIn")!) && student ? <Navigate to="/dashboard" /> : <Signup students={students}/>}> </Route>
         <Route path="/calendar" element={ <Calendar isLoading={loading} events={events} />}></Route>
         <Route path="/officers" element={<Officers />}></Route>
         <Route path="/faqs" element={<FAQs />}></Route>

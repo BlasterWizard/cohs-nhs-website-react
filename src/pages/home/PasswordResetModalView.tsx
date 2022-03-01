@@ -37,6 +37,8 @@ const PasswordResetModalView: React.FC<PasswordResetModalViewProps> = ({show, ha
         <Modal.Body>
           <p className="font-bold">Enter Email:</p>
           <Form.Control className="m-2 p-1 rounded-lg" value={userEmail} onChange={userEmailTextHandler} type="email"/>
+          <hr/>
+          <p className="text-sm">You will be sent further instructions on resetting your password at the email entered above.</p>
         </Modal.Body>
         <Modal.Footer>
           <Button className="bg-red-500 hover:bg-red-600 font-bold" onClick={handleClose}>
