@@ -83,6 +83,17 @@ export interface Setting {
   juniorsRequiredHours: number | null;
 }
 
+export interface TermDates {
+  term1StartDate: Date;
+  term1EndDate: Date;
+  term2StartDate: Date;
+  term2EndDate: Date;
+  term3StartDate: Date;
+  term3EndDate: Date;
+  term4StartDate: Date;
+  term4EndDate: Date;
+}
+
 function App() {
   const auth = getAuth();
   var [user, setUser] = useState<UserCredential["user"]>();
@@ -95,6 +106,7 @@ function App() {
     seniorsRequiredHours: null,
     juniorsRequiredHours: null
   });
+  const [termDates, setTermDates] = useState<TermDates>();
   const localStorage = window.localStorage;
 
 
@@ -128,6 +140,30 @@ function App() {
         setSettings({
           seniorsRequiredHours: doc.data()!.seniorsRequiredHours,
           juniorsRequiredHours: doc.data()!.juniorsRequiredHours
+        });
+      }
+    });
+
+    const unsubscribeToTermDates = onSnapshot(doc(db, "settings", "termDates"), (doc) => {
+      if (doc.data() != undefined) {
+        const {
+            term1StartDate, 
+            term1EndDate, 
+            term2StartDate, 
+            term2EndDate, 
+            term3StartDate, 
+            term3EndDate, 
+            term4StartDate, 
+            term4EndDate} = doc.data()!;
+        setTermDates({
+          term1StartDate: new Date(term1StartDate.toDate()),
+          term1EndDate: new Date(term1EndDate.toDate()),
+          term2StartDate: new Date(term2StartDate.toDate()),
+          term2EndDate: new Date(term2EndDate.toDate()),
+          term3StartDate: new Date(term3StartDate.toDate()),
+          term3EndDate: new Date(term3EndDate.toDate()),
+          term4StartDate: new Date(term4StartDate.toDate()),
+          term4EndDate: new Date(term4EndDate.toDate())
         });
       }
     });
@@ -253,6 +289,10 @@ function App() {
     }
   }
 
+  if (!window.navigator.onLine) {
+    return <p>No Internet</p>
+  } 
+
   return (
     <div>
       <ToasterNode />
@@ -331,7 +371,7 @@ function App() {
         <Route path="/admin-projects/non-NHS">
           {/* <AdminNonNHSProjects /> */}
         </Route>
-        <Route path="/admin-settings" element={<AdminSettings students={students} isLoading={loading} />}></Route>
+        <Route path="/admin-settings" element={<AdminSettings students={students} termDates={termDates} isLoading={loading} />}></Route>
         <Route path="/" element={ <Home />} />
       </Routes>
     </div>
