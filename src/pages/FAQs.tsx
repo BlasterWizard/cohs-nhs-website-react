@@ -1,107 +1,46 @@
 import React from "react";
 
-interface FAQNode {
+export interface FAQNode {
   title: string;
   content: string;
   link?: LinkNode;
+  docId?: string;
 }
 
 interface LinkNode {
   title: string;
-  link: string;
+  url: string;
 }
 
-const FAQs = () => {
+interface FAQsProps {
+  faqs: FAQNode[];
+}
+
+const FAQs: React.FC<FAQsProps> = ({ faqs }) => {
   return (
     <main>
       <div className="space-y-5 flex flex-col items-center">
         <h2 className="text-4xl font-bold text-center">FAQs</h2>
         {/* Contacts */}
 
-        <FAQ
-          title={"NHS Class of 2022 Google Classroom"}
-          content={"Code: bh3walj"}
-          link={{
-            title: "Invite Link",
-            link: "https://classroom.google.com/c/MjA1NTU2NzM0MzYy?cjc=bh3walj",
-          }}
-        />
+        <div className="flex flex-col items-center bg-white/60 p-3 rounded-2xl">
+          <p className="font-bold text-xl">NHS Class of 2022 Google Classroom</p>
+          <p><span className="font-bold">Code:</span>bh3walj</p>
+          <a className="block bg-emerald-400 hover:bg-emerald-500 hover:scale-120 p-2 rounded-full m-2 text-white font-bold w-fit" href="https://classroom.google.com/c/MjA1NTU2NzM0MzYy?cjc=bh3walj">
+          Invite Link
+          </a>
+        </div>
 
-        <FAQ
-          title={"Band Mobile App"}
-          content={"Please contact Ashton if you are not yet in the Band!"}
-        />
+        <div className="flex flex-col items-center bg-white/60 py-3 px-4 rounded-2xl">
+          <p className="font-bold text-xl">Band Mobile App</p>
+          <p>Please contact Ashton if you are not yet in the Band!</p>
+        </div>     
 
-        {/* FAQs */}
-        <FAQ
-          title={"Can service hours be from non-affiliated NHS projects?"}
-          content={"Yes! :DD"}
-        />
-
-        <FAQ
-          title={"Can I assign hours for my club’s volunteer projects?"}
-          content={
-            "You must consult with the board before setting your club’s volunteer hours"
-          }
-        />
-
-        <FAQ
-          title={"When and where should I submit my hours?"}
-          content={
-            "Please submit your hours throughout the year as you complete them through this link:"
-          }
-          link={{
-            title: "Hours Submission Form",
-            link: "https://docs.google.com/forms/d/e/1FAIpQLScF6mnnhG7RBQ-7wqClG2CoqWMAcXgEaGcCt8bRyWxI2BZrjA/viewform/",
-          }}
-        />
-
-        <FAQ
-          title={"Who do I contact about service hours/projects?"}
-          content={"Lauren :DD"}
-        />
-
-        <FAQ
-          title={"Should I worry about completing my NHS project this year?"}
-          content={"Nope! No need to worry!"}
-        />
-
-        <FAQ
-          title={
-            "What is the difference between an NHS project and a service project?"
-          }
-          content={
-            "A service project is a project done in order to get the required service hours completed while an NHS project is a project that you plan and lead others in."
-          }
-        />
-
-        <FAQ
-          title={"When are opportunity meetings?"}
-          content={
-            "Opportunity meetings are every third Mondays of the month, but they are subject to change! These meetings are an easy way for you to get your hours in!"
-          }
-        />
-
-        <FAQ
-          title={"Can I “double dip” my NHS and CSF hours?"}
-          content={
-            "Nope! But CSF tutoring hours can count for both NHS and CSF "
-          }
-        />
-
-        <FAQ
-          title={"Can I assign hours for my club’s volunteer projects?"}
-          content={
-            "You must consult with the board before setting your club’s volunteer hours"
-          }
-        />
-
-        <FAQ
-          title={"If I have a question that isn’t answered here who do I ask?"}
-          content={
-            "Please contact the officer board and NOT Mrs. Lew!"
-          }
-        />
+        {
+          faqs.map((faq: FAQNode, index: number) => {
+            return <FAQ title={faq.title} content={faq.content} link={faq.link} />
+          })
+        }   
       </div>
     </main>
   );
@@ -115,7 +54,7 @@ const FAQ: React.FC<FAQNode> = ({ title, content, link }) => {
       </h5>
       <h6>{content}</h6>
       {link && (
-        <a className="block bg-indigo-300 hover:bg-indigo-400 hover:scale-120 p-2 rounded-full m-2 text-white font-bold w-fit" href={link.link}>
+        <a className="block bg-indigo-300 hover:bg-indigo-400 hover:scale-120 p-2 rounded-full m-2 text-white font-bold w-fit" href={link.url}>
           {link.title}
         </a>
       )}

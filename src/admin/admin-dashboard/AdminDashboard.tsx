@@ -11,6 +11,8 @@ import AdminStudentsDashboard from "./students-nodes/AdminStudentsDashboard";
 import AdminAnnouncementsDashboard from "./announcements-nodes/AdminAnnouncementsDashboard";
 import AdminRequiredHoursView from "./AdminRequiredHoursView";
 import AdminProjectsDashboard from "./projects/AdminProjectsDashboard";
+import AdminFAQDashboard from "./faqs/AdminFAQDashboard";
+import { FAQNode } from "../../pages/FAQs";
 
 interface AdminDashboardProps {
   students: Student[];
@@ -21,6 +23,7 @@ interface AdminDashboardProps {
   getStudentNameFromID: (id:string) => string;
   getStudentObjectFromID: (id:string) => Student | undefined;
   settings: Setting;
+  faqs: FAQNode[];
 }
 
 export interface GradeAmountTabulation {
@@ -37,7 +40,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   isLoading,
   getStudentNameFromID,
   getStudentObjectFromID,
-  settings
+  settings,
+  faqs
 }) => {
   const [gradesAmount, setGradesAmount] = useState<GradeAmountTabulation>({
     seniors: 0,
@@ -92,11 +96,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <AdminRequiredHoursView settings={settings}/>
       </div>
      
-        <div className="flex flex-col space-y-5">
+        <div className="grid grid-cols-2 grid-flow-row gap-3">
           <AdminAnnouncementsDashboard student={student} announcements={announcements}/>
           <AdminStudentsDashboard students={students} />
           <AdminEventsDashboard events={events} students={students} getStudentNameFromID={getStudentNameFromID}/>
           <AdminProjectsDashboard students={students} getStudentObjectFromID={getStudentObjectFromID}/>
+        </div>
+
+        <div className="flex flex-col space-y-5 mt-3">
+          <AdminFAQDashboard faqs={faqs} />
         </div>
     </main>
   );

@@ -10,7 +10,7 @@ import Signup from "./pages/home/Signup";
 import { query, collection, onSnapshot, doc, Timestamp } from "firebase/firestore";
 import ToasterNode from "./components/ToasterNode";
 import Dashboard from "./dashboard/Dashboard";
-import FAQs from "./pages/FAQs";
+import FAQs, { FAQNode } from "./pages/FAQs";
 import Officers from "./pages/Officers";
 import Calendar from "./pages/calendar/Calendar";
 import Profile from "./dashboard/profile/Profile";
@@ -107,6 +107,7 @@ function App() {
     juniorsRequiredHours: null
   });
   const [termDates, setTermDates] = useState<TermDates>();
+  const [faqs, setFAQs] = useState<FAQNode[]>([]);
   const localStorage = window.localStorage;
 
 
@@ -124,6 +125,7 @@ function App() {
         fetchEventsFromFirestore();
         fetchAnnouncementsFromFirestore();
         fetchSettings();
+        fetchFAQs();
         localStorage.setItem("isLoggedIn", "true");
       } else {
         // User is signed out
@@ -170,9 +172,37 @@ function App() {
     setLoading(false);
   }
 
+  async function fetchFAQs() {
+    var items: FAQNode[] = [];
+    const FAQsQS = await query(collection(db, "faqs"))
+    const unsubscribeToFAQsQS = onSnapshot(FAQsQS, (querySnapshot) => {
+      items = [];
+      querySnapshot.forEach((doc) => {
+        const {title, content, link} = doc.data();
+        if (link != undefined) {
+         items.push({
+          title: title,
+          content: content,
+          link: {
+            title: link.title,
+            url: link.url
+          },
+          docId: doc.id
+         });
+        } else {
+          items.push({
+            title: title,
+            content: content,
+            docId: doc.id
+          });
+        }
+      });
+      setFAQs(items);
+    });
+  }
+
   async function fetchAnnouncementsFromFirestore() {
     setLoading(true);
-    console.log("fetch announcements");
     const announcementsQS = await query(collection(db, "announcements"));
     var items: Announcement[] = [];
     const unsubscribeToAnnouncementsQS = onSnapshot(announcementsQS, (querySnapshot) => {
@@ -338,7 +368,7 @@ function App() {
         <Route path="/signup" element={JSON.parse(localStorage.getItem("isLoggedIn")!) && student ? <Navigate to="/dashboard" /> : <Signup students={students}/>}> </Route>
         <Route path="/calendar" element={ <Calendar isLoading={loading} events={events} />}></Route>
         <Route path="/officers" element={<Officers />}></Route>
-        <Route path="/faqs" element={<FAQs />}></Route>
+        <Route path="/faqs" element={<FAQs faqs={faqs}/>}></Route>
         <Route path="/dashboard" element={
             <Dashboard
               student={student}
@@ -357,6 +387,7 @@ function App() {
               getStudentNameFromID={getStudentNameFromID}
               getStudentObjectFromID={getStudentObjectFromID}
               settings={settings}
+              faqs={faqs}
             />}></Route>
         <Route path="/admin-attendance" element={ <AdminAttendance
               events={events}
