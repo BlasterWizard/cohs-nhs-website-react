@@ -29,7 +29,6 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
     for(var i = 0; i < student.attendance.length; i++) {
       if (event.code === student.attendance[i].code) {
         if (student.attendance[i].didAttend) {
-          console.log("true");
           setCheckedBoxValue(true);
         } else {
           setCheckedBoxValue(false);

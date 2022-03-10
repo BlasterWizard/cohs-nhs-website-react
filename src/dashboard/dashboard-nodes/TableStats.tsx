@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Table from "react-bootstrap/Table";
-import { AttendedEvent, Event, Student } from '../../App';
+import { AttendedEvent, Event, Setting, Student } from '../../App';
 
 interface TableStatsProps {
     student: Student | undefined;
     totalMandatoryAttendedEvents: number;
     totalProjectHours: number;
+    settings: Setting;
 }
 
-const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, totalMandatoryAttendedEvents}) => {
+const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, totalMandatoryAttendedEvents, settings}) => {
   const [totalEventsAttended, setTotalEventsAttended] = useState<number>(0);
+  const [requiredHours, setRequiredHours] = useState<number>(0);
 
   useEffect(() => {
     tabulateNumberOfTotalEventsAttended();
-  }, [student?.attendance]);
+    displayCorrectRequiredHours();
+  }, [student, settings]);
 
   const tabulateNumberOfTotalEventsAttended = () => {
     var numberofAttendedEvents: number = 0;
@@ -25,12 +27,22 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
     setTotalEventsAttended(numberofAttendedEvents);
   }
 
+  const displayCorrectRequiredHours = () => {
+    switch (student?.grade) {
+      case 12: 
+        setRequiredHours(settings.seniorsRequiredHours ?? 0);
+        break;
+      case 11:
+        setRequiredHours(settings.juniorsRequiredHours ?? 0);
+    }
+  }
+
     return (
       <div className="bg-white/60 rounded-lg p-4">
           <div className="bg-slate-400/30 space-x-2 flex p-1">
             <p className="font-bold">Total Project Hours:</p>
             <div className="flex-grow"></div>
-            <p>{totalProjectHours}</p>
+            <p>{totalProjectHours} / {requiredHours}</p>
           </div>
           <div className="space-x-2 flex p-1">
             <p className="font-bold">Total Events Attended:</p>

@@ -17,7 +17,7 @@ interface AdminEditEventModalProps {
 }
 
 export interface SelectionOption {
-  value: string;
+  value: any;
   label: string;
 }
 

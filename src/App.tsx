@@ -374,6 +374,7 @@ function App() {
               student={student}
               isLoading={loading}
               events={events}
+              settings={settings}
             /> }></Route>
         <Route path="/attendance" element={<Attendance isLoading={loading} student={student} events={events}/>}></Route>
         <Route path="/projects" element={<Projects student={student} isLoading={loading}  getStudentObjectFromID={getStudentObjectFromID}/>}></Route>
@@ -403,7 +404,7 @@ function App() {
           {/* <AdminNonNHSProjects /> */}
         </Route>
         <Route path="/admin-settings" element={<AdminSettings students={students} termDates={termDates} isLoading={loading} />}></Route>
-        <Route path="/" element={ <Home />} />
+        <Route path="/" element={JSON.parse(localStorage.getItem("isLoggedIn")!) && student ? <Navigate to="/dashboard" /> : <Home />} />
       </Routes>
     </div>
     

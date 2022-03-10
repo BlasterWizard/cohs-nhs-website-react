@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TableStats from "./dashboard-nodes/TableStats";
-import { Announcement, AttendedEvent, Event, Student } from "../App";
+import { Announcement, AttendedEvent, Event, Setting, Student } from "../App";
 import DashboardPagination, { DashboardPaginationKeys } from "../components/DashboardPagination";
 import SpinnerNode from "../components/Spinner";
 import Announcements from "./dashboard-nodes/DashboardAnnouncementsView";
@@ -9,12 +9,14 @@ interface DashboardProps {
   student: Student | undefined;
   isLoading: boolean;
   events: Event[];
+  settings: Setting;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
   student,
   isLoading,
-  events
+  events,
+  settings
 }) => {
   const [totalProjectHours, setTotalProjectHours] = useState<number>(0);
   const [totalMandatoryEvents, setTotalMandatoryEvents] = useState<Event[]>([]);
@@ -89,6 +91,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         student={student}
         totalProjectHours={totalProjectHours}
         totalMandatoryAttendedEvents={totalMandatoryAttendedEvents}
+        settings={settings}
       />
     </main>
   );
