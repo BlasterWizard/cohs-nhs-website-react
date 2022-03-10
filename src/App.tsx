@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Badge, Nav, Navbar } from "react-bootstrap";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/home/Home";
 import db from "./firebase";

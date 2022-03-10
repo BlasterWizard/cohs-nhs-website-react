@@ -11,6 +11,11 @@ interface AttendanceProps {
   isLoading: boolean;
 }
 
+interface CategorizedAttendanceEventsViewProps {
+  events: Event[];
+  student: Student | undefined;
+}
+
 interface AttendanceEventProps {
   event: Event;
   student: Student | undefined;
@@ -22,7 +27,6 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    console.log(events);
     findAndCategorizeEvents();
   }, [events, student?.attendance]);
 
@@ -76,14 +80,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
               />
             }
           >
-            <div className="space-y-5">
-              {priorEvents.map(
-                (event: Event, index: number) => (
-                  <AttendanceEvent event={event} student={student} key={index} />
-                )
-              )}
-            </div>
-            
+            <CategorizedAttendanceEventsView events={priorEvents} student={student} />
           </Collapsible>
           <Collapsible
             trigger={
@@ -101,13 +98,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
               />
             }
           >
-            <div className="space-y-5">
-              {todayEvents.map(
-                (event: Event, index: number) => (
-                  <AttendanceEvent event={event} student={student} key={index} />
-                )
-              )}
-            </div>
+            <CategorizedAttendanceEventsView events={todayEvents} student={student} />
           </Collapsible>
           <Collapsible
             trigger={
@@ -125,19 +116,81 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
               />
             }
           >
-            <div className="space-y-5">
-              {upcomingEvents.map(
-                (event: Event, index: number) => (
-                  <AttendanceEvent event={event} student={student} key={index} />
-                )
-              )}
-            </div>
+            <CategorizedAttendanceEventsView events={upcomingEvents} student={student} />
           </Collapsible>
         </>
       )}
     </main>
   );
 };
+
+const CategorizedAttendanceEventsView: React.FC<CategorizedAttendanceEventsViewProps> = ({events, student}) => {
+
+  const [yearCategories, setYearCategories] = useState<string[]>([]);
+  const [yearSelectionIndex, setYearSelectionIndex] = useState<number>(0);
+
+  useEffect(() => {
+    createYearCategories();
+  }, [events]);
+
+  const createYearCategories = () => {
+    var items: string[] = [];
+    events.forEach((event) => {
+      const eventYear = event.startDate.getFullYear().toString();
+      if (eventYear !== items[items.length - 1]) {
+        items.push(eventYear);
+      }
+    });
+    setYearCategories(items);
+  }
+
+  const reverseYearSelectionIndex = () => {
+    const nextYearSelectionIndex = yearSelectionIndex - 1;
+    if (nextYearSelectionIndex >= 0 ) {
+      setYearSelectionIndex(nextYearSelectionIndex);
+    }
+  }
+
+  const advanceYearSelectionIndex = () => {
+    const nextYearSelectionIndex = yearSelectionIndex + 1;
+    if (nextYearSelectionIndex < yearCategories.length) {
+      setYearSelectionIndex(nextYearSelectionIndex);
+    }
+  }
+
+  return (
+    <div>
+       <div className="flex items-center w-full my-2">
+        <button disabled={yearSelectionIndex === 0} onClick={reverseYearSelectionIndex}>
+          {
+            yearSelectionIndex === 0  ?
+            <i className="fas fa-chevron-left bg-indigo-200 py-1 px-2 rounded-full text-white mx-3 focus:outline-none"></i> :
+            <i className="fas fa-chevron-left bg-indigo-300 hover:bg-indigo-400 py-1 px-2 rounded-full text-white mx-3 focus:outline-none"></i>
+          }
+          
+        </button>
+        <div className="flex-grow"></div>
+        <p className="font-bold text-xl">{yearCategories[yearSelectionIndex]}</p>
+        <div className="flex-grow"></div>
+        <button disabled={yearSelectionIndex === yearCategories.length - 1} onClick={advanceYearSelectionIndex}>
+          {
+            yearSelectionIndex === yearCategories.length - 1 ?
+            <i className="fas fa-chevron-right bg-indigo-200 py-1 px-2 rounded-full text-white mx-3 focus:outline-none"></i> :
+            <i className="fas fa-chevron-right bg-indigo-300 hover:bg-indigo-400 py-1 px-2 rounded-full text-white mx-3 active:outline-none"></i>
+          }
+        </button>
+      </div>
+      
+      <div className="space-y-5">
+        {events.filter((event: Event) => event.startDate.getFullYear().toString() === yearCategories[yearSelectionIndex]).map(
+          (event: Event, index: number) => (
+            <AttendanceEvent event={event} student={student} key={index} />
+          )
+        )}
+      </div>
+    </div>
+  );
+}
 
 const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event, student }) => {
 
