@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Event, Student } from "../../App";
-import { SheetChange } from "../admin-attendance/AdminAttendance";
+import { StudentSheetChange } from "../admin-attendance/AdminAttendance";
 import StudentProjectCell from "./StudentProjectHoursCell";
 
 interface StudentProjectHoursRowProps {
     student: Student;
     events: Event[];
     rowNum: number;
-    projectChanges: SheetChange[];
-    setProjectChanges: React.Dispatch<React.SetStateAction<SheetChange[]>>;
+    projectChanges: StudentSheetChange[];
+    setProjectChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
 }
 
 const StudentProjectHoursRow: React.FC<StudentProjectHoursRowProps> = ({ student, events, rowNum, projectChanges, setProjectChanges}) => {

@@ -46,7 +46,7 @@ export interface AttendedEvent {
   didAttend?: boolean;
   localEventName: string;
   projectHours: number;
-  startDate: any;
+  startDate: Date;
 }
 
 

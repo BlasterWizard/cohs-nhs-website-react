@@ -1,5 +1,4 @@
 import React from "react";
-import {Announcement, AttendedEvent, Event, Student } from "../App";
 
 export enum DropdownHeaderStates {
   Open = "open",
@@ -7,14 +6,15 @@ export enum DropdownHeaderStates {
 }
 
 export interface DropdownHeaderProps {
+  style?: string;
   ddState: DropdownHeaderStates;
   text: string;
-  list: Student[] | Event[] | AttendedEvent[] | Announcement[];
+  list: Array<any>;
 }
 
-const DropdownHeader: React.FC<DropdownHeaderProps> = ({ text, ddState, list }) => {
+const DropdownHeader: React.FC<DropdownHeaderProps> = ({ text, style, ddState, list }) => {
   return (
-    <div className="flex items-center space-x-5">
+    <div className={"flex items-center space-x-5 " + style}>
       <h4 className="text-lg font-bold">{text}</h4>
       <div className="flex-grow"></div>
       <p className="bg-white/60 p-0.5 px-2 rounded-full">{list.length}</p>

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Event, Student } from '../../App';
-import { SheetChange } from './AdminAttendance';
+import { StudentSheetChange } from './AdminAttendance';
 import StudentAttendanceCell from './StudentAttendanceCell';
 
 interface StudentRowProps {
     student: Student;
     events: Event[];
     rowNum: number;
-    changes: SheetChange[];
-    setChanges: React.Dispatch<React.SetStateAction<SheetChange[]>>;
+    changes: StudentSheetChange[];
+    setChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
 }
   
 const StudentRow: React.FC<StudentRowProps> = ({

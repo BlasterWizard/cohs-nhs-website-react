@@ -1,65 +1,87 @@
 import React from "react";
-import { Badge, Button, Modal } from "react-bootstrap";
-import { SheetChange, SheetChangeType } from "../admin-attendance/AdminAttendance";
+import { Modal } from "react-bootstrap";
+import { SheetChange, StudentSheetChange } from "../admin-attendance/AdminAttendance";
 import db from "../../firebase";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
+import Collapsible from "react-collapsible";
+import DropdownHeader, { DropdownHeaderStates } from "../../components/DropdownHeader";
 
 interface AdminProjectChangesModalProps {
-  projectChanges: SheetChange[];
-  setProjectChanges: React.Dispatch<React.SetStateAction<SheetChange[]>>;
+  projectChanges: StudentSheetChange[];
+  setProjectChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
   show: boolean;
   handleClose: () => void;
+  totalProjectHoursSheetChanges: number;
 }
 
 interface ProjectHoursChangeNodeProps {
-  projectHourChange: SheetChange;
-  projectChanges: SheetChange[];
-  setProjectChanges: React.Dispatch<React.SetStateAction<SheetChange[]>>;
+  studentSheetChange: StudentSheetChange;
+  projectChanges: StudentSheetChange[];
+  setProjectChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
+}
+
+interface ProjectHoursSheetChangeNodeProps {
+  sheetChange: SheetChange;
+  studentSheetChange: StudentSheetChange;
+  projectChanges: StudentSheetChange[];
+  setProjectChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
 }
 
 const AdminProjectHoursChangesModal: React.FC<AdminProjectChangesModalProps> =
-  ({ projectChanges, setProjectChanges, show, handleClose }) => {
+  ({ projectChanges, setProjectChanges, show, handleClose, totalProjectHoursSheetChanges }) => {
 
   //push changes to firebase
   async function uploadProjectHoursChanges() {
-    projectChanges.forEach(async (projectHourChange) => {
-      await updateDoc(doc(db, "users", projectHourChange.studentDocId), {
-        attendance: arrayRemove({
-          code: projectHourChange.eventCode,
-          didAttend: !projectHourChange.didAttend,
-          projectHours: projectHourChange.projectHours,
-          startDate: projectHourChange.startDate
-        })
+    console.log(projectChanges);
+    projectChanges.forEach(async (projectChange) => {
+      var studentAttendanceArray = projectChange.student.attendance;
+      projectChange.sheetChanges.forEach((studentSheetChange) => {
+        let studentSheetChangeInStudentAttendanceArray = studentAttendanceArray.filter((attendedEvent) => attendedEvent.code === studentSheetChange.event.code);
+        if (studentSheetChangeInStudentAttendanceArray.length === 0) {
+          studentAttendanceArray.push({
+            code: studentSheetChange.event.code,
+            localEventName: studentSheetChange.event.name,
+            projectHours: studentSheetChange.newProjectHours ?? 0,
+            startDate: studentSheetChange.startDate ?? new Date()
+          });
+        } else {
+          let studentSheetChangeInStudentAttendanceArrayIndex = studentAttendanceArray.indexOf(studentSheetChangeInStudentAttendanceArray[0]);
+          studentAttendanceArray[studentSheetChangeInStudentAttendanceArrayIndex].projectHours = studentSheetChange.newProjectHours!;
+        }
       });
+      console.log(studentAttendanceArray);
+      await updateDoc(doc(db, "users", projectChange.student.docId), {
+        attendance: studentAttendanceArray
+      }).then(() => {
+        
+      }).catch((error) => {
+        toast.error(error.message);
+      });
+    });
 
-      if (projectHourChange.changeType === SheetChangeType.Addition) {
-        console.log("add");
-        await updateDoc(doc(db, "users", projectHourChange.studentDocId), {
-          attendance: arrayUnion({
-            code: projectHourChange.eventCode,
-            didAttend: projectHourChange.didAttend,
-            projectHours: projectHourChange.projectHours,
-            startDate: projectHourChange.startDate
-          })
-        });
-      }
-    })
     handleClose();
     setProjectChanges([]);
-  };
+  }
   
     return (
       <>
         <Modal scrollable={true} show={show} onHide={handleClose} centered>
           <Modal.Header>
-            <Modal.Title>Review {projectChanges.length} Proposed Changes</Modal.Title>
+            <Modal.Title>Review {totalProjectHoursSheetChanges} Proposed Changes</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {projectChanges.length > 0 ? projectChanges.map((projectChange, index) => (
-              <ProjectHoursChangeNode projectHourChange={projectChange} projectChanges={projectChanges} setProjectChanges={setProjectChanges} key={index} />
-            )) : <p className="font-bold text-center">No Changes</p>}
+            <div className="space-y-3">
+              {projectChanges.length > 0 ? projectChanges.map((studentSheetChange, index) => (
+                <ProjectHoursChangeNode studentSheetChange={studentSheetChange} projectChanges={projectChanges} setProjectChanges={setProjectChanges} key={index} />
+              )) : <p className="font-bold text-center">No Changes</p>}
+            </div>
           </Modal.Body>
           <Modal.Footer>
+            {<button className="bg-sky-400 hover:bg-sky-500 p-2 rounded-lg text-white font-bold" onClick={() => setProjectChanges([])}>
+              Clear All
+            </button>}
+            <div className="flex-grow"></div>
             {<button className="bg-red-500 hover:bg-red-600 p-2 rounded-lg text-white font-bold" onClick={handleClose}>
               Close
             </button>}
@@ -72,39 +94,71 @@ const AdminProjectHoursChangesModal: React.FC<AdminProjectChangesModalProps> =
     );
   };
 
-const ProjectHoursChangeNode: React.FC<ProjectHoursChangeNodeProps> = ({ projectHourChange, projectChanges, setProjectChanges }) => {
-  const deleteProjectHoursChangeNode = () => {
-    console.log("delete");
-    const copyProjectChanges = [...projectChanges];
-    copyProjectChanges.forEach((copyProjectChange) => {
-      if (copyProjectChange.randId === projectHourChange.randId) {
-        copyProjectChange.changeType = SheetChangeType.Deletion
-        ;
-      }
-    });
-    setProjectChanges(copyProjectChanges);
-    console.log(projectChanges)
-  }
+const ProjectHoursChangeNode: React.FC<ProjectHoursChangeNodeProps> = ({ studentSheetChange, projectChanges, setProjectChanges }) => {
   return (
-    <div className="bg-indigo-100 p-2 rounded-2xl flex items-center space-x-3">
-      <p className={projectHourChange.didAttend ? "bg-emerald-400 px-2 py-0.5 rounded-full w-fit text-sm text-white font-bold h-1/2" : "bg-red-400 px-2 py-0.5 rounded-full w-fit text-sm text-white font-bold h-1/2"}>
-        {projectHourChange.didAttend ? "Add" : "Delete"}
-      </p>
-      <div className="flex flex-col">
-        <h4 className="text-md font-bold">{projectHourChange.studentName}</h4>
-        <h6 className="text-sm">{projectHourChange.eventName}</h6>
+    <Collapsible trigger={
+    <DropdownHeader
+      text={studentSheetChange.student.name}
+      ddState={DropdownHeaderStates.Closed}
+      list={studentSheetChange.sheetChanges}
+      style={"bg-blue-200/60 p-1 px-2 rounded-md"}
+    />}
+    triggerWhenOpen={
+      <DropdownHeader
+        text={studentSheetChange.student.name}
+        ddState={DropdownHeaderStates.Open}
+        list={studentSheetChange.sheetChanges}
+        style={"bg-blue-200/60 p-1 px-2 rounded-md"}
+      />
+    }
+    >
+      <div className="space-y-3 bg-indigo-100/40 p-2 rounded-md">     
+      {
+        studentSheetChange.sheetChanges.map((sheetChange: SheetChange, index: number) => {
+          return <ProjectHoursSheetChangeNode studentSheetChange={studentSheetChange} sheetChange={sheetChange} key={index} projectChanges={projectChanges} setProjectChanges={setProjectChanges} />;
+        })
+      }
       </div>
-     
-      <div className="flex space-x-2 items-center">
-        <p className={projectHourChange.didAttend ? "bg-red-400 px-2 py-0.5 rounded-full w-fit text-sm text-white font-bold h-1/2 text-center" : "bg-emerald-400 px-2 py-0.5 rounded-full w-fit text-sm text-white font-bold h-1/2"}>{projectHourChange.didAttend ? "Not Present" : "Present"}</p>
-        <i className="fas fa-arrow-right"></i>
-        <p className={projectHourChange.didAttend ? "bg-emerald-400 px-2 py-0.5 rounded-full w-fit text-sm text-white font-bold h-1/2" : "bg-red-400 px-2 py-0.5 rounded-full w-fit text-sm text-white font-bold h-1/2 text-center"}>{projectHourChange.didAttend ? "Present" : "Not Present"}</p>
-        <button className="bg-red-500 py-1 px-2 rounded-full text-white w-fit text-sm " onClick={deleteProjectHoursChangeNode}>
-          <i className="fas fa-minus"></i>
-        </button>
-      </div>
-    </div>
+    </Collapsible>
   );
 };
+
+const ProjectHoursSheetChangeNode: React.FC<ProjectHoursSheetChangeNodeProps> = ({sheetChange, studentSheetChange, projectChanges, setProjectChanges}) => {
+
+  const deleteProjectHoursChangeNode = () => {
+    var copyProjectChanges = [...projectChanges];
+    for (var i = 0; i < copyProjectChanges.length; i++) {
+      if (copyProjectChanges[i].student.specialId === studentSheetChange.student.specialId) {
+        for (var j = 0; j < copyProjectChanges[i].sheetChanges.length; j++) {
+          if (copyProjectChanges[i].sheetChanges[j].event.code === sheetChange.event.code) {
+            copyProjectChanges[i].sheetChanges.splice(copyProjectChanges[i].sheetChanges.findIndex((singleSheetChange) => singleSheetChange.event.code === sheetChange.event.code),1);
+            break;
+          }
+        }
+      }
+    }
+    setProjectChanges(copyProjectChanges.filter((studentSheetChange) => studentSheetChange.sheetChanges.length > 0).length === 0 ? [] : copyProjectChanges);
+  }
+
+  return (
+    <div className="bg-indigo-100/80 p-2 rounded-md flex items-center space-x-3">
+      {sheetChange.originalValue === 0 ? <p className="text-white bg-emerald-300 rounded-full py-0.5 px-2 font-bold text-sm">New</p> : <p className="text-white bg-yellow-300 rounded-full py-0.5 px-2 font-bold text-sm">Edit</p>}
+      <p>{sheetChange.event.name}</p>
+      {sheetChange.originalValue === 0 ? "" : 
+          <p className="bg-blue-200 px-2 rounded-full font-bold">{sheetChange.originalValue}</p>
+      }
+      {sheetChange.originalValue === 0 ? "" : 
+        <i className="fas fa-chevron-right text-black"></i>
+      }
+      <p className="bg-blue-200 px-2 rounded-full font-bold">{sheetChange.newProjectHours}</p>
+      <div className="flex-grow"></div>
+      <button className="bg-red-500 hover:bg-red-600 py-1 px-2 rounded-full text-white w-fit text-sm " onClick={deleteProjectHoursChangeNode}>
+        <i className="fas fa-minus"></i>
+      </button>
+    </div>
+  );
+}
+
+
 
 export default AdminProjectHoursChangesModal;

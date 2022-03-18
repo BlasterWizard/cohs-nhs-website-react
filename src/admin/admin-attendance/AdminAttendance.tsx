@@ -22,16 +22,18 @@ export enum SheetChangeType {
   Deletion
 }
 
+export interface StudentSheetChange {
+  student: Student;
+  sheetChanges: SheetChange[];
+}
+
 export interface SheetChange {
-  studentDocId: string;
-  studentName: string;
-  eventCode: string;
-  eventName: string;
-  randId: number;
+  event: Event;
+  originalValue: boolean | number;
+  didAttend?: boolean;
+  newProjectHours?: number;
+  changeType?: SheetChangeType
   startDate?: Date;
-  didAttend: boolean;
-  projectHours: number;
-  changeType: SheetChangeType
 }
 
 export enum GradeType {
@@ -45,7 +47,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
   isLoading,
 }) => {
   const [studentList, setStudentList] = useState<Student[]>([]);
-  const [changes, setChanges] = useState<SheetChange[]>([]);
+  const [changes, setChanges] = useState<StudentSheetChange[]>([]);
   const [show, setShow] = useState(false);
   const [displayEventsAmount, setDisplayEventsAmount] = useState<number>(6);
   const [preDisplayEventsAmount, setPreDisplayEventsAmount] = useState<number>(6);

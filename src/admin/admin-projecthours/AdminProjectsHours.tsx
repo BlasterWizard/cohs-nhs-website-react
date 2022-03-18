@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import db from "../../firebase";
-import { Badge, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { AttendedEvent, Event, Student } from "../../App";
 import AdminPagination, {
   AdminPaginationKeys,
 } from "../../components/AdminPagination";
 import SpinnerNode from "../../components/Spinner";
-import {SheetChange } from "../admin-attendance/AdminAttendance";
+import {StudentSheetChange } from "../admin-attendance/AdminAttendance";
 import AdminProjectChangesModal from "./AdminProjectHoursChangesModal";
 import StudentProjectsRow from "./StudentProjectHoursRow";
-import toast from "react-hot-toast";
-import { doc, updateDoc } from "firebase/firestore";
 
 interface AdminProjectsHoursProps {
   events: Event[];
@@ -24,40 +21,36 @@ const AdminProjectHours: React.FC<AdminProjectsHoursProps> = ({
   isLoading,
 }) => {
   const [studentList, setStudentList] = useState<Student[]>([]);
-  const [projectChanges, setProjectChanges] = useState<SheetChange[]>([]);
+  const [projectChanges, setProjectChanges] = useState<StudentSheetChange[]>([]);
   const [projectEvents, setProjectEvents] = useState<Event[]>([]);
+  const [totalProjectHoursSheetChanges, setTotalProjectHoursSheetChanges] = useState(0);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
     setProjectEvents(events.filter((el) => el.hasProjectHours === true));
-    console.log("hello");
   }, [students, events]);
+
+  useEffect(() => {
+   calculateProjectHourSheetChanges();
+  }, [projectChanges]);
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
     setShow(false);
   };
 
+  const calculateProjectHourSheetChanges = () => {
+    var total = 0;
+    projectChanges.forEach((studentSheetChange) => {
+      total += studentSheetChange.sheetChanges.length;
+    });
+    setTotalProjectHoursSheetChanges(total);
+  }
+
   if (isLoading) {
     return <SpinnerNode />;
   }
-
-  const getCopyOfStudentAttendance = (studentAttendance: AttendedEvent[]) => {
-    const studentAttendanceObj: AttendedEvent[] = [];
-    studentAttendance.forEach((attendedEvent: AttendedEvent) => {
-      studentAttendanceObj.push({
-        code: attendedEvent.code,
-        localEventName: attendedEvent.localEventName,
-        projectHours: attendedEvent.projectHours
-          ? attendedEvent.projectHours
-          : 0,
-        startDate: attendedEvent.startDate,
-        didAttend: attendedEvent.didAttend,
-      });
-    });
-    return studentAttendanceObj;
-  };
 
   return (
     <main>
@@ -65,9 +58,9 @@ const AdminProjectHours: React.FC<AdminProjectsHoursProps> = ({
       <AdminPagination defaultActiveKey={AdminPaginationKeys.AdminProjects} />
       <div className="absolute sticky left-5 top-5">
         <p
-          className={projectChanges.length > 0 ? "bg-red-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2" : "bg-emerald-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2"}
+          className={totalProjectHoursSheetChanges > 0 ? "bg-red-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2" : "bg-emerald-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2"}
         >
-          {projectChanges.length} Unsaved Changes
+          {totalProjectHoursSheetChanges} Unsaved Changes
         </p>
       </div>
       {/* <AdminProjectsPagination defaultActiveKey={AdminProjectsPaginationKeys.NHS} /> */}
@@ -105,6 +98,7 @@ const AdminProjectHours: React.FC<AdminProjectsHoursProps> = ({
           setProjectChanges={setProjectChanges}
           show={show}
           handleClose={handleClose}
+          totalProjectHoursSheetChanges={totalProjectHoursSheetChanges}
         />
       </div>
     </main>

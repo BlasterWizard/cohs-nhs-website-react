@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 import Collapsible from "react-collapsible";
 import {AttendedEvent, Event, Student } from "../App";
 import DashboardPagination, { DashboardPaginationKeys } from "../components/DashboardPagination";
@@ -21,13 +22,21 @@ interface AttendanceEventProps {
   student: Student | undefined;
 }
 
+enum AttendanceSelectionFilter {
+  Present = "present",
+  Mandatory = "mandatory",
+  None = "none"
+}
+
 const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) => {
   const [priorEvents, setPriorEvents] = useState<Event[]>([]);
   const [todayEvents, setTodayEvents] = useState<Event[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [filterSelection, setFilterSelection] = useState(AttendanceSelectionFilter.None);
 
   useEffect(() => {
     findAndCategorizeEvents();
+    selectFilter(filterSelection);
   }, [events, student?.attendance]);
 
   const findAndCategorizeEvents = () => {
@@ -50,6 +59,39 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
     setUpcomingEvents(upcomingEventsList);
   };
 
+  const selectFilter = (e: any) => {
+
+    switch(e) {
+      case "present":
+        setFilterSelection(AttendanceSelectionFilter.Present);
+        const items: Event[] = [];
+        console.log(priorEvents);
+        student?.attendance.forEach((attendedEvent: AttendedEvent) => {
+          priorEvents.forEach((priorEvent: Event) => {
+            if (attendedEvent.code === priorEvent.code && attendedEvent.didAttend) {
+              items.push(priorEvent);
+            }
+          });
+        });
+        console.log(items);
+        setPriorEvents(items);
+        break;
+      case "mandatory":
+
+        findAndCategorizeEvents();
+        setFilterSelection(AttendanceSelectionFilter.Mandatory);
+        console.log(priorEvents);
+        setPriorEvents(priorEvents.filter((priorEvent) => priorEvent.optionality === "M"));
+        // setTodayEvents(todayEvents.filter((todayEvent) => todayEvent.optionality === "M"));
+        // setUpcomingEvents(upcomingEvents.filter((upcomingEvent) => upcomingEvent.optionality === "M"));
+        break;
+      case "none":
+        findAndCategorizeEvents();
+        setFilterSelection(AttendanceSelectionFilter.None);
+        break;
+    }
+  }
+
   if (isLoading) {
     return <SpinnerNode />;
   }
@@ -59,6 +101,22 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
       <DashboardPagination
         defaultActiveKey={DashboardPaginationKeys.Attendance}
       />
+
+      <div className="flex items-center space-x-3">
+        <DropdownButton title="Filters" className="bg-indigo-500" onSelect={selectFilter}>
+          <Dropdown.Item eventKey="present" className="hover:bg-indigo-200">Present</Dropdown.Item>
+          <Dropdown.Item eventKey="mandatory" className="hover:bg-indigo-200">Mandatory Events</Dropdown.Item>
+          <Dropdown.Item eventKey="none" className="hover:bg-indigo-200">
+            <div className="flex items-center space-x-3">
+              <p>None</p>
+              <i className="fas fa-eraser"></i>
+            </div>
+          </Dropdown.Item>
+        </DropdownButton>
+        <p className="font-bold text-xl text-white">{filterSelection.charAt(0).toUpperCase() + filterSelection.slice(1)}</p>
+      </div>
+     
+      
 
       {student?.attendance.length === 0 ? (
         <h4 className="no-found small-glass">No Events Attended</h4>

@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import toast from "react-hot-toast";
-import { AttendedEvent, Event, Student } from "../../App";
-import { SheetChange, SheetChangeType } from "../admin-attendance/AdminAttendance";
+import { Event, Student } from "../../App";
+import { StudentSheetChange, SheetChange } from "../admin-attendance/AdminAttendance";
 
 
 interface StudentProjectHoursCellProps {
   event: Event;
   index: number;
   student: Student;
-  projectChanges: SheetChange[];
-  setProjectChanges: React.Dispatch<React.SetStateAction<SheetChange[]>>;
+  projectChanges: StudentSheetChange[];
+  setProjectChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
 }
 
 const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
@@ -21,91 +21,98 @@ const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
   projectChanges,
   setProjectChanges,
 }) => {
-  const [projectHoursValue, setProjectHoursValue] = useState<string>("");
+  const [originalProjectHoursValue, setOriginalProjectHoursValue] = useState<number>(0); //internal purposes. not UI
+  const [newProjectHoursValue, setProjectHoursValue] = useState<string>("");
 
   useEffect(() => {
-    student.attendance.forEach((attendedEvent) => {
-      if (event.code === attendedEvent.code && event.hasProjectHours) {
-        if (attendedEvent.projectHours) {
-          setProjectHoursValue(attendedEvent.projectHours.toString());
-        }
-      }
-    });
+   fetchProjectHoursValueInStudentAttendance();
   }, [student?.attendance]);
 
   useEffect(() => {
-    setNewChangedValue();
-  }, [projectChanges]);
+    projectChangesOnChange();
+  }, [projectChanges])
 
-  const setNewChangedValue = () => {
-    for(var i = 0; i < projectChanges.length; i++) {
-      if (projectChanges[i].eventCode === event.code && projectChanges[i].studentDocId === student.docId) {
-        //Check to see if delete from modal 
-        if (projectChanges[i].changeType === SheetChangeType.Deletion) {
-          setProjectChanges(projectChanges.filter((el) => el.randId !== projectChanges[i].randId));
-          return 
+  const projectChangesOnChange = () => {
+    if (projectChanges.length === 0) {
+      setProjectHoursValue(originalProjectHoursValue === 0 ? "" : originalProjectHoursValue.toString());
+      fetchProjectHoursValueInStudentAttendance();
+    } else {
+      for (var i = 0; i < projectChanges.length; i++) {
+        if (projectChanges[i].student.specialId === student.specialId) {
+          for (var j = 0; j < projectChanges[i].sheetChanges.length; j++) {
+            let sheetChange = projectChanges[i].sheetChanges[j];
+            if (sheetChange.event.code === event.code) {
+              setProjectHoursValue(sheetChange.newProjectHours === 0 ? "" : sheetChange.newProjectHours!.toString());
+              return;
+            }
+          }
+          //can't find event in student sheet changes
+          setProjectHoursValue(originalProjectHoursValue === 0 ? "" : originalProjectHoursValue.toString());
+          fetchProjectHoursValueInStudentAttendance();
+          break;
         }
-        setProjectHoursValue(projectChanges[i].projectHours === 0 ? "" : projectChanges[i].projectHours.toString());
-        return
-      } 
+      }
     }
+  }
+
+  const fetchProjectHoursValueInStudentAttendance = () => {
+    student.attendance.forEach((attendedEvent) => {
+      if (event.code === attendedEvent.code && event.hasProjectHours) {
+        setProjectHoursValue(attendedEvent.projectHours === 0 ? "" : attendedEvent.projectHours.toString());
+        setOriginalProjectHoursValue(attendedEvent.projectHours === 0 ? 0 : attendedEvent.projectHours);
+      }
+    });
   }
 
   const onProjectHoursValueChanged = (e: any) => {
-    var options: SheetChange[] = [...projectChanges];
-    var addAttendanceChangeObj: boolean = true;
-
-    const attendanceChangeObj = {
-      studentDocId: student.docId,
-      eventCode: event.code,
-      projectHours: e.target.value === "" ? 0 : parseInt(e.target.value),
-      eventName: event.name,
-      studentName: student.name,
-      startDate: event.startDate,
-      randId: Math.random() * 1000000,
-      changeType: SheetChangeType.Addition,
-      didAttend: isStudentChangeEventInStudentAttendance(student.attendance, event.code)
-    };
-    
     if (!isNaN(e.target.value)) {
       setProjectHoursValue(e.target.value);
-       // //TODO: Check to see if there's an previous opposition operation on the same cell.
-      // //TODO: If so, do not update current change to options and delete the opposition operation
-      options.forEach((option) => {
-        if (
-          option.eventCode === attendanceChangeObj.eventCode &&
-          option.studentDocId === attendanceChangeObj.studentDocId 
-        ) {
-          if (e.target.value !== "") {
-            console.log("not NAN");
-            option.projectHours = parseInt(e.target.value);
+      const parsedEnteredValue = e.target.value === "" ? 0 : parseInt(e.target.value);
+
+      const projectHoursChangeObj: SheetChange = {
+        originalValue: originalProjectHoursValue!,
+        newProjectHours: parsedEnteredValue,
+        event: event
+      };
+      var studentsSheetChange = [...projectChanges];
+      let thisStudentSheetChangeArray = studentsSheetChange.filter((studentSheetChange) => studentSheetChange.student.specialId === student.specialId)
+      //find if there's existing StudentSheetChange entry, if not create one
+      if (thisStudentSheetChangeArray.length === 0) {
+        studentsSheetChange.push({
+          student: student,
+          sheetChanges: [projectHoursChangeObj]
+        });
+      } else {
+        //else update existing StudentSheetChange entry
+        let indexOfThisStudentSheetChange = studentsSheetChange.indexOf(thisStudentSheetChangeArray[0]);
+        //TODO: Check to see if new value is back to originalValue, if so delete StudentSheetChange
+        for (var i = 0; i < studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.length; i++) {
+          //find specific SheetChange for project cell
+          let priorEditProjectHours = studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.filter((sheetChange) => sheetChange.event.code === event.code);
+          if (priorEditProjectHours.length === 0) {
+            //if no, append projectHoursChangeObj to studentsSheetChange
+            studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.push(projectHoursChangeObj);
           } else {
-            console.log("NAN");
-            const indexOfAddChange = options.indexOf(option);
-            options.splice(indexOfAddChange, 1);
+            const priorEditProjectHoursIndex = studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.indexOf(priorEditProjectHours[0]);
+            //check if entered value is the same as original value, if so delete
+            if (studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges[priorEditProjectHoursIndex].originalValue === parsedEnteredValue) {
+              studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.splice(priorEditProjectHoursIndex, 1);
+              if (studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.length === 0) {
+                studentsSheetChange.splice(indexOfThisStudentSheetChange, 1);
+              }
+              break;
+            } else {
+              //if not the same, change projectHours
+              studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges[priorEditProjectHoursIndex].newProjectHours = parsedEnteredValue;
+            }
           }
-          addAttendanceChangeObj = false;
         }
-      });
-
-      if (addAttendanceChangeObj) {
-        options.push(attendanceChangeObj);
       }
-
-      setProjectChanges(options);
+     setProjectChanges(studentsSheetChange);
     } else {
-      toast.error("Entry must be a number");
+      toast.error("Entered Value must be a valid number");
     }
   };
-
-  const isStudentChangeEventInStudentAttendance = (studentAttendance: AttendedEvent[], eventCode: string):boolean => {
-    for (var i = 0; i < studentAttendance.length; i++) {
-      if (studentAttendance[i].code === eventCode) {
-        return true;
-      } 
-    }
-    return false;
-  }
 
   return (
     <td key={index}>
@@ -115,7 +122,7 @@ const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
         }>
           <input
           type="text"
-          value={projectHoursValue}
+          value={newProjectHoursValue}
           onChange={onProjectHoursValueChanged}
           className="rounded-lg w-10 text-center"
         />
