@@ -30,9 +30,8 @@ export interface StudentSheetChange {
 export interface SheetChange {
   event: Event;
   originalValue: boolean | number;
-  didAttend?: boolean;
-  newProjectHours?: number;
-  changeType?: SheetChangeType
+  didAttend: boolean;
+  newProjectHours: number;
   startDate?: Date;
 }
 
@@ -48,14 +47,15 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
 }) => {
   const [studentList, setStudentList] = useState<Student[]>([]);
   const [changes, setChanges] = useState<StudentSheetChange[]>([]);
+  const [totalAttendanceSheetChanges, setTotalAttendanceSheetChanges] = useState<number>(0);
   const [show, setShow] = useState(false);
   const [displayEventsAmount, setDisplayEventsAmount] = useState<number>(6);
   const [preDisplayEventsAmount, setPreDisplayEventsAmount] = useState<number>(6);
   const [startShowEventIndex, setStartShowEventIndex] = useState<number>(0);
   const [endShowEventIndex, setEndShowEventIndex] = useState<number>(displayEventsAmount);
   const gradeSelectionOptions= [
-    {value: GradeType.Senior, label: "Seniors"},
-    {value: GradeType.Junior, label: "Juniors"}
+    {value: GradeType.Senior, label: "Seniors"}
+    // {value: GradeType.Junior, label: "Juniors"}
   ];
   const [gradeSelection, setGradeSelection] = useState<SelectionOption>({
     value: GradeType.Senior, 
@@ -67,6 +67,10 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
   useEffect(() => {
     setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
   }, [students, events, displayEventsAmount]);
+
+  useEffect(() => {
+    calculateTotalAttendanceSheets();
+  }, [changes]);
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -120,6 +124,14 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
     }
   }
 
+  const calculateTotalAttendanceSheets = () => {
+    var total = 0;
+    changes.forEach((change) => {
+      total += change.sheetChanges.length;
+    })
+    setTotalAttendanceSheetChanges(total);
+  }
+
   if (isLoading) {
     return <SpinnerNode />;
   }
@@ -130,9 +142,9 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
       <AdminPagination defaultActiveKey={AdminPaginationKeys.AdminAttendance} />
       <div className="absolute sticky left-5 top-5">
         <p
-          className={changes.length > 0 ? "bg-red-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2" : "bg-emerald-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2"}
+          className={totalAttendanceSheetChanges > 0 ? "bg-red-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2 z-10" : "bg-emerald-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2 z-10"}
         >
-          {changes.length} Unsaved Changes
+          {totalAttendanceSheetChanges} Unsaved Changes
         </p>
       </div>
         
@@ -206,6 +218,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
           show={show}
           handleClose={handleClose}
           setChanges={setChanges}
+          totalAttendanceSheetChanges={totalAttendanceSheetChanges}
         />
       </div>
     </main>

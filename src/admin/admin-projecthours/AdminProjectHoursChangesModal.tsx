@@ -42,7 +42,8 @@ const AdminProjectHoursChangesModal: React.FC<AdminProjectChangesModalProps> =
           studentAttendanceArray.push({
             code: studentSheetChange.event.code,
             localEventName: studentSheetChange.event.name,
-            projectHours: studentSheetChange.newProjectHours ?? 0,
+            projectHours: studentSheetChange.newProjectHours,
+            didAttend: studentSheetChange.didAttend,
             startDate: studentSheetChange.startDate ?? new Date()
           });
         } else {

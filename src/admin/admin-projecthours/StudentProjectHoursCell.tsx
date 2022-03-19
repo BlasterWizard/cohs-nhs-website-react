@@ -69,13 +69,21 @@ const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
       setProjectHoursValue(e.target.value);
       const parsedEnteredValue = e.target.value === "" ? 0 : parseInt(e.target.value);
 
+      let didAttendForEvent = false;
+      const studentAttendedEventArray = student.attendance.filter((attendedEvent) => attendedEvent.code === event.code)
+      if (studentAttendedEventArray.length != 0) {
+        didAttendForEvent = studentAttendedEventArray[0].didAttend ?? false;
+      }
+
       const projectHoursChangeObj: SheetChange = {
         originalValue: originalProjectHoursValue!,
         newProjectHours: parsedEnteredValue,
+        didAttend: didAttendForEvent,
         event: event
       };
-      var studentsSheetChange = [...projectChanges];
-      let thisStudentSheetChangeArray = studentsSheetChange.filter((studentSheetChange) => studentSheetChange.student.specialId === student.specialId)
+
+      let studentsSheetChange = [...projectChanges];
+      const thisStudentSheetChangeArray = studentsSheetChange.filter((studentSheetChange) => studentSheetChange.student.specialId === student.specialId)
       //find if there's existing StudentSheetChange entry, if not create one
       if (thisStudentSheetChangeArray.length === 0) {
         studentsSheetChange.push({
@@ -84,11 +92,11 @@ const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
         });
       } else {
         //else update existing StudentSheetChange entry
-        let indexOfThisStudentSheetChange = studentsSheetChange.indexOf(thisStudentSheetChangeArray[0]);
+        const indexOfThisStudentSheetChange = studentsSheetChange.indexOf(thisStudentSheetChangeArray[0]);
         //TODO: Check to see if new value is back to originalValue, if so delete StudentSheetChange
         for (var i = 0; i < studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.length; i++) {
           //find specific SheetChange for project cell
-          let priorEditProjectHours = studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.filter((sheetChange) => sheetChange.event.code === event.code);
+          const priorEditProjectHours = studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.filter((sheetChange) => sheetChange.event.code === event.code);
           if (priorEditProjectHours.length === 0) {
             //if no, append projectHoursChangeObj to studentsSheetChange
             studentsSheetChange[indexOfThisStudentSheetChange].sheetChanges.push(projectHoursChangeObj);

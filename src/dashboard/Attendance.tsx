@@ -102,7 +102,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
         defaultActiveKey={DashboardPaginationKeys.Attendance}
       />
 
-      <div className="flex items-center space-x-3">
+      {/* <div className="flex items-center space-x-3 my-3">
         <DropdownButton title="Filters" className="bg-indigo-500" onSelect={selectFilter}>
           <Dropdown.Item eventKey="present" className="hover:bg-indigo-200">Present</Dropdown.Item>
           <Dropdown.Item eventKey="mandatory" className="hover:bg-indigo-200">Mandatory Events</Dropdown.Item>
@@ -114,20 +114,20 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
           </Dropdown.Item>
         </DropdownButton>
         <p className="font-bold text-xl text-white">{filterSelection.charAt(0).toUpperCase() + filterSelection.slice(1)}</p>
-      </div>
+      </div> */}
      
-      
-
+    
       {student?.attendance.length === 0 ? (
         <h4 className="no-found small-glass">No Events Attended</h4>
       ) : (
-        <>
+        <div className="space-y-3">
           <Collapsible
             trigger={
               <DropdownHeader
                 text={"Prior Events"}
                 ddState={DropdownHeaderStates.Closed}
                 list={priorEvents}
+                style={"bg-indigo-100/60 rounded-xl p-2"}
               />
             }
             triggerWhenOpen={
@@ -135,6 +135,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
                 text={"Prior Events"}
                 ddState={DropdownHeaderStates.Open}
                 list={priorEvents}
+                style={"bg-indigo-100/60 rounded-xl p-2"}
               />
             }
           >
@@ -146,6 +147,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
                 text={"Today"}
                 ddState={DropdownHeaderStates.Closed}
                 list={todayEvents}
+                style={"bg-indigo-100/60 rounded-xl p-2"}
               />
             }
             triggerWhenOpen={
@@ -153,6 +155,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
                 text={"Today"}
                 ddState={DropdownHeaderStates.Open}
                 list={todayEvents}
+                style={"bg-indigo-100/60 rounded-xl p-2"}
               />
             }
           >
@@ -164,6 +167,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
                 text={"Upcoming Events"}
                 ddState={DropdownHeaderStates.Closed}
                 list={upcomingEvents}
+                style={"bg-indigo-100/60 rounded-xl p-2"}
               />
             }
             triggerWhenOpen={
@@ -171,12 +175,13 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
                 text={"Upcoming Events"}
                 ddState={DropdownHeaderStates.Open}
                 list={upcomingEvents}
+                style={"bg-indigo-100/60 rounded-xl p-2"}
               />
             }
           >
             <CategorizedAttendanceEventsView events={upcomingEvents} student={student} />
           </Collapsible>
-        </>
+        </div>
       )}
     </main>
   );
