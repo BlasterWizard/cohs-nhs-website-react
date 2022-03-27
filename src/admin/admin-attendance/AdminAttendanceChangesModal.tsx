@@ -1,8 +1,8 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import { StudentSheetChange, SheetChangeType, SheetChange } from "./AdminAttendance";
+import { StudentSheetChange, SheetChange } from "./AdminAttendance";
 import db from "../../firebase";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import Collapsible from "react-collapsible";
 import DropdownHeader, { DropdownHeaderStates } from "../../components/DropdownHeader";
 import toast from "react-hot-toast";

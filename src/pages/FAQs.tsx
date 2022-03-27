@@ -38,7 +38,7 @@ const FAQs: React.FC<FAQsProps> = ({ faqs }) => {
 
         {
           faqs.map((faq: FAQNode, index: number) => {
-            return <FAQ title={faq.title} content={faq.content} link={faq.link} />
+            return <FAQ title={faq.title} content={faq.content} link={faq.link} key={index} />
           })
         }   
       </div>

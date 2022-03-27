@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import { AttendedEvent, Event, Student } from "../../App";
+import { Event, Student } from "../../App";
 import AdminPagination, {
   AdminPaginationKeys,
 } from "../../components/AdminPagination";
 import SpinnerNode from "../../components/Spinner";
-import {StudentSheetChange } from "../admin-attendance/AdminAttendance";
+import TableHeader from "../../components/TableHeader";
+import { StudentSheetChange } from "../admin-attendance/AdminAttendance";
 import AdminProjectChangesModal from "./AdminProjectHoursChangesModal";
 import StudentProjectsRow from "./StudentProjectHoursRow";
 
@@ -25,10 +26,17 @@ const AdminProjectHours: React.FC<AdminProjectsHoursProps> = ({
   const [projectEvents, setProjectEvents] = useState<Event[]>([]);
   const [totalProjectHoursSheetChanges, setTotalProjectHoursSheetChanges] = useState(0);
   const [show, setShow] = useState(false);
+  
+  const maxAmountEventsToShow = 6;
+  const [displayEventsAmount, setDisplayEventsAmount] = useState<number>(maxAmountEventsToShow);
+  const [startShowEventIndex, setStartShowEventIndex] = useState<number>(0);
+  const [endShowEventIndex, setEndShowEventIndex] = useState<number>(0);
 
   useEffect(() => {
     setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
     setProjectEvents(events.filter((el) => el.hasProjectHours === true));
+    setEndShowEventIndex(startShowEventIndex + projectEvents.length);
+    projectEvents.length < maxAmountEventsToShow ? setDisplayEventsAmount(projectEvents.length) : setDisplayEventsAmount(maxAmountEventsToShow);
   }, [students, events]);
 
   useEffect(() => {
@@ -63,43 +71,53 @@ const AdminProjectHours: React.FC<AdminProjectsHoursProps> = ({
           {totalProjectHoursSheetChanges} Unsaved Changes
         </p>
       </div>
-      {/* <AdminProjectsPagination defaultActiveKey={AdminProjectsPaginationKeys.NHS} /> */}
-      <div className="bg-white/60 p-2 rounded-2xl flex flex-col items-center mt-3">
-        <h3 className="font-bold text-3xl text-center">Seniors</h3>
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Row</th>
-              <th>Special ID</th>
-              <th>Student Name</th>
-              {projectEvents.map((event, index) => (
-                <th key={index} className="text-center">{event.name}</th>
+
+        <div className="bg-white/60 p-2 rounded-2xl flex flex-col items-center mt-3">
+       
+          <TableHeader 
+          events={projectEvents}
+          displayEventsAmount={displayEventsAmount}
+          startShowEventIndex={startShowEventIndex}
+          endShowEventIndex={endShowEventIndex}
+          setStartShowEventIndex={setStartShowEventIndex}
+          setEndShowEventIndex={setEndShowEventIndex}
+          setDisplayEventsAmount={setDisplayEventsAmount}
+          />
+          
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Row</th>
+                <th>Special ID</th>
+                <th>Student Name</th>
+                {projectEvents.slice(startShowEventIndex, endShowEventIndex).map((event, index) => (
+                  <th key={index} className="text-center">{event.name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {studentList.map((student, index) => (
+                <StudentProjectsRow
+                  key={index}
+                  student={student}
+                  events={projectEvents.slice(startShowEventIndex, endShowEventIndex)}
+                  rowNum={index + 1}
+                  projectChanges={projectChanges}
+                  setProjectChanges={setProjectChanges}
+                />
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {studentList.map((student, index) => (
-              <StudentProjectsRow
-                key={index}
-                student={student}
-                events={projectEvents}
-                rowNum={index + 1}
-                projectChanges={projectChanges}
-                setProjectChanges={setProjectChanges}
-              />
-            ))}
-          </tbody>
-        </Table>
-        <button className="bg-emerald-400 hover:bg-emerald-500 py-2 px-3 rounded-full font-bold text-white" onClick={handleShow}>
-          Update
-        </button>
-        <AdminProjectChangesModal
-          projectChanges={projectChanges}
-          setProjectChanges={setProjectChanges}
-          show={show}
-          handleClose={handleClose}
-          totalProjectHoursSheetChanges={totalProjectHoursSheetChanges}
-        />
+            </tbody>
+          </Table>
+          <button className="bg-emerald-400 hover:bg-emerald-500 py-2 px-3 rounded-full font-bold text-white" onClick={handleShow}>
+            Update
+          </button>
+          <AdminProjectChangesModal
+            projectChanges={projectChanges}
+            setProjectChanges={setProjectChanges}
+            show={show}
+            handleClose={handleClose}
+            totalProjectHoursSheetChanges={totalProjectHoursSheetChanges}
+          />
       </div>
     </main>
   );

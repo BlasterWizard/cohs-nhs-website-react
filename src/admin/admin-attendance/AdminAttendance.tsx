@@ -10,6 +10,7 @@ import StudentRow from "./StudentRow";
 import AdminAttendanceChangesModal from "./AdminAttendanceChangesModal";
 import ReactSelect from "react-select";
 import { SelectionOption } from "../admin-dashboard/events-nodes/AdminEditEventModal";
+import TableHeader from "../../components/TableHeader";
 
 interface AdminAttendanceProps {
   events: Event[];
@@ -49,20 +50,11 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
   const [changes, setChanges] = useState<StudentSheetChange[]>([]);
   const [totalAttendanceSheetChanges, setTotalAttendanceSheetChanges] = useState<number>(0);
   const [show, setShow] = useState(false);
+
   const [displayEventsAmount, setDisplayEventsAmount] = useState<number>(6);
-  const [preDisplayEventsAmount, setPreDisplayEventsAmount] = useState<number>(6);
   const [startShowEventIndex, setStartShowEventIndex] = useState<number>(0);
   const [endShowEventIndex, setEndShowEventIndex] = useState<number>(displayEventsAmount);
-  const gradeSelectionOptions= [
-    {value: GradeType.Senior, label: "Seniors"}
-    // {value: GradeType.Junior, label: "Juniors"}
-  ];
-  const [gradeSelection, setGradeSelection] = useState<SelectionOption>({
-    value: GradeType.Senior, 
-    label: "Seniors"
-  });
-  const [showAdminAttendanceSettings, setShowAdminAttendanceSettings] = useState(false);
-  const [showDisplayEventsAmountError, setShowDisplayEventsAmountError] = useState(false);
+
 
   useEffect(() => {
     setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
@@ -76,53 +68,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
   const handleClose = () => {
     setShow(false);
   };
-  const settingsTarget = useRef(null);
 
-  const gradeSelectionHandler = (e: any) => {
-    switch(e.value) {
-      case GradeType.Senior:
-        setGradeSelection(gradeSelectionOptions[0]);
-        break;
-      case GradeType.Junior:
-        setGradeSelection(gradeSelectionOptions[1]);
-        break;
-    }
-  }
-
-  const reverseEventIndicies = () => {
-    if ((startShowEventIndex - displayEventsAmount - 1) >= 0) {
-      setStartShowEventIndex(startShowEventIndex - displayEventsAmount - 1);
-    } else {
-      setStartShowEventIndex(0);
-    }
-
-    if (startShowEventIndex != 0) {
-      setEndShowEventIndex(startShowEventIndex);
-    }
-  }
-
-  const advanceEventIndicies = () => {
-    //endShowEventIndex is exclusive 
-    if (endShowEventIndex != events.length) {
-      setStartShowEventIndex(endShowEventIndex);
-    }
-
-    if ((endShowEventIndex + displayEventsAmount) >= events.length) {
-      setEndShowEventIndex(events.length);
-    } else {
-      setEndShowEventIndex(endShowEventIndex + displayEventsAmount);
-    } 
-  }
-
-  const preDisplayEventAmountsHandler = (e: any) => {
-    setPreDisplayEventsAmount(e.target.value);
-    if (e.target.value <= events.length && e.target.value > 0) {
-      setEndShowEventIndex(startShowEventIndex + e.target.value);
-      setShowDisplayEventsAmountError(false);
-    } else {
-      setShowDisplayEventsAmountError(true);
-    }
-  }
 
   const calculateTotalAttendanceSheets = () => {
     var total = 0;
@@ -149,42 +95,14 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
       </div>
         
       <div className="bg-white/60 p-2 rounded-2xl flex flex-col items-center mt-3">
-        <div className="flex items-center w-full my-3">
-          <button disabled={startShowEventIndex === 0} onClick={reverseEventIndicies}>
-            <i className={startShowEventIndex === 0 ? "fas fa-chevron-left ml-5 bg-indigo-300 py-2.5 px-3 rounded-full text-white" : "fas fa-chevron-left ml-5 bg-indigo-400 hover:bg-indigo-500 py-2.5 px-3 rounded-full text-white"}></i>
-          </button>
-          <div className="flex-grow"></div>
-          <div className="flex space-x-3 items-center">
-            <ReactSelect defaultValue={gradeSelection} value={gradeSelection} options={gradeSelectionOptions} onChange={gradeSelectionHandler} className="text-black font-bold w-48 text-center text-xl" closeMenuOnSelect={true}/>
-            <Button ref={settingsTarget} onClick={() => setShowAdminAttendanceSettings(!showAdminAttendanceSettings)} className="hover:bg-transparent hover:text-black text-black border-0 text-xl">
-              {
-                showAdminAttendanceSettings ?
-                <p className="bg-red-400 px-2 py-0.5 rounded-full text-white">Close</p>
-                :<i className="fas fa-cog"></i>
-              }
-
-            </Button>
-            <Overlay target={settingsTarget.current} show={showAdminAttendanceSettings} placement="bottom">
-              <Tooltip>
-                <div className="flex flex-col items-center">
-                  <p className="font-bold">Events Display Amount:</p>
-                  <Form.Control
-                  value={preDisplayEventsAmount}
-                  onChange={preDisplayEventAmountsHandler}
-                  type="text"
-                  placeholder=""
-                  className="w-1/2 text-center"
-                  />
-                  {showDisplayEventsAmountError ? <p className="text-red-400">Amount must be greater than 0 and less than or equal to {events.length}</p> : <div></div>}
-                </div>
-              </Tooltip>
-            </Overlay>
-          </div>
-          <div className="flex-grow"></div>
-          <button onClick={advanceEventIndicies} disabled={endShowEventIndex === events.length}>
-            <i className={endShowEventIndex === events.length ? "fas fa-chevron-right mr-5 bg-indigo-300 py-2.5 px-3 rounded-full text-white" : "fas fa-chevron-right mr-5 bg-indigo-400 hover:bg-indigo-500 py-2.5 px-3 rounded-full text-white"}></i>
-          </button>
-        </div>
+        <TableHeader 
+        events={events} 
+        displayEventsAmount={displayEventsAmount} 
+        startShowEventIndex={startShowEventIndex}
+        endShowEventIndex={endShowEventIndex}
+        setStartShowEventIndex={setStartShowEventIndex}
+        setEndShowEventIndex={setEndShowEventIndex}
+        setDisplayEventsAmount={setDisplayEventsAmount} />
        
         <Table striped bordered hover responsive>
           <thead>
