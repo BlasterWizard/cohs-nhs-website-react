@@ -23,6 +23,16 @@ const AddStudentModalView: React.FC<AddStudentModalViewProps> = ({
     useEffect(() => {
       setNewStudentID(generateNewStudentId);
     }, []);
+
+    const closeModal = () => {
+      handleClose();
+      clearFields();
+    }
+
+    const clearFields = () => {
+      setNewStudentGrade(0);
+      setNewStudentName("")
+    }
   
     const newStudentNameHandler = (e: any) => {
       setNewStudentName(e.target.value);
@@ -107,7 +117,7 @@ const AddStudentModalView: React.FC<AddStudentModalViewProps> = ({
         <Modal.Footer>
           <Button
             className="bg-red-500 hover:bg-red-600 font-bold text-white"
-            onClick={handleClose}
+            onClick={closeModal}
           >
             Close
           </Button>

@@ -35,6 +35,17 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
     createSelectionOptions();
   }, [students, eventList]); 
 
+  const clearFields = () => {
+    setEventName("");
+    setStartDate(new Date());
+    setEndDate(new Date());
+    setEventDescription("");
+    setOptionality(false);
+    setAllowsProjectHours(false);
+    setNewEventAuthors([]);
+    setSelectionOptions([]);
+  }
+
   const eventNameHandler = (e: any) => {
     setEventName(e.target.value);
   };
@@ -122,6 +133,11 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
       }
     }
     return "";
+  }
+
+  const closeModal = () => {
+    handleClose();
+    clearFields();
   }
 
   return (
@@ -221,7 +237,7 @@ const AddEventModalView: React.FC<AddEventModalViewProps> = ({
       <Modal.Footer>
         <Button
           className="bg-red-500 hover:bg-red-600 font-bold text-white"
-          onClick={handleClose}
+          onClick={closeModal}
         >
           Close
         </Button>

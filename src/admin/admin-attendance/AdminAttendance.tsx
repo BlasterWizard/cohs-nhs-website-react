@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
-import { Button, Form, Overlay, Table, Tooltip } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import {Event, Student } from "../../App";
 import AdminPagination, {
   AdminPaginationKeys,
@@ -8,8 +8,6 @@ import AdminPagination, {
 import SpinnerNode from "../../components/Spinner";
 import StudentRow from "./StudentRow";
 import AdminAttendanceChangesModal from "./AdminAttendanceChangesModal";
-import ReactSelect from "react-select";
-import { SelectionOption } from "../admin-dashboard/events-nodes/AdminEditEventModal";
 import TableHeader from "../../components/TableHeader";
 
 interface AdminAttendanceProps {

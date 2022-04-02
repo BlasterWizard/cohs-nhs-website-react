@@ -83,7 +83,6 @@ const AdminAddFAQView: React.FC<AdminAddFAQViewProps> = ({ show, handleClose}) =
         return false;
     }
 
-
     return (
         <Modal
         size="lg"

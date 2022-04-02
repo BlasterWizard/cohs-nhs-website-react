@@ -1,6 +1,6 @@
 import { updateDoc, addDoc, getDocs, collection, arrayUnion, doc } from 'firebase/firestore';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { Student } from '../../../App';
@@ -59,7 +59,16 @@ const AddNewAnnouncementView: React.FC<AddNewAnnouncementViewProps> = ({student,
         }
     }
 
-    
+    const closeModal = () => {
+      handleClose();
+      clearFields();
+    }
+
+    const clearFields = () => {
+      setNewAnnouncementContent("");
+      setNewAnnouncementTitle("");
+    }
+
     return (
     <Modal
       size="lg"
@@ -87,7 +96,7 @@ const AddNewAnnouncementView: React.FC<AddNewAnnouncementViewProps> = ({student,
         
       </Modal.Body>
       <Modal.Footer>
-        <Button className="bg-red-500 hover:bg-red-600 font-bold text-white" onClick={handleClose}>Close</Button>
+        <Button className="bg-red-500 hover:bg-red-600 font-bold text-white" onClick={closeModal}>Close</Button>
         <Button className="bg-green-400 hover:bg-green-500 font-bold text-white" onClick={sendAnnouncement}>Send</Button>
       </Modal.Footer>
     </Modal>
