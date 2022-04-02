@@ -8,7 +8,8 @@ import AdminPagination, {
 import SpinnerNode from "../../components/Spinner";
 import StudentRow from "./StudentRow";
 import AdminAttendanceChangesModal from "./AdminAttendanceChangesModal";
-import TableHeader from "../../components/TableHeader";
+import GradeSelectionDropdown from "../../components/GradeSelectionDropdown";
+import { SelectionOption } from "../admin-dashboard/events-nodes/AdminEditEventModal";
 
 interface AdminAttendanceProps {
   events: Event[];
@@ -48,15 +49,14 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
   const [changes, setChanges] = useState<StudentSheetChange[]>([]);
   const [totalAttendanceSheetChanges, setTotalAttendanceSheetChanges] = useState<number>(0);
   const [show, setShow] = useState(false);
-
-  const [displayEventsAmount, setDisplayEventsAmount] = useState<number>(6);
-  const [startShowEventIndex, setStartShowEventIndex] = useState<number>(0);
-  const [endShowEventIndex, setEndShowEventIndex] = useState<number>(displayEventsAmount);
-
+  const [tableGradeSelection, setTableGradeSelection] = useState<SelectionOption>({
+    value: GradeType.Senior, 
+    label: "Seniors"
+});
 
   useEffect(() => {
     setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
-  }, [students, events, displayEventsAmount]);
+  }, [students, events]);
 
   useEffect(() => {
     calculateTotalAttendanceSheets();
@@ -84,7 +84,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
     <main>
       <h2 className="text-4xl font-bold">Attendance</h2>
       <AdminPagination defaultActiveKey={AdminPaginationKeys.AdminAttendance} />
-      <div className="absolute sticky left-5 top-5">
+      <div className="absolute sticky left-5 top-5 m-3">
         <p
           className={totalAttendanceSheetChanges > 0 ? "bg-red-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2 z-10" : "bg-emerald-400 p-3 rounded-full w-fit text-sm text-white font-bold h-1/2 z-10"}
         >
@@ -92,51 +92,41 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
         </p>
       </div>
         
-      <div className="bg-white/60 p-2 rounded-2xl flex flex-col items-center mt-3">
-        <TableHeader 
-        events={events} 
-        displayEventsAmount={displayEventsAmount} 
-        startShowEventIndex={startShowEventIndex}
-        endShowEventIndex={endShowEventIndex}
-        setStartShowEventIndex={setStartShowEventIndex}
-        setEndShowEventIndex={setEndShowEventIndex}
-        setDisplayEventsAmount={setDisplayEventsAmount} />
-       
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Row</th>
-              <th>Special ID</th>
-              <th>Student Name</th>
-              {events.slice(startShowEventIndex, endShowEventIndex).map((event, index) => (
-                <th key={index}>{event.name}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {studentList.map((student, index) => (
-              <StudentRow
-                key={index}
-                student={student}
-                events={events.slice(startShowEventIndex, endShowEventIndex)}
-                rowNum={index + 1}
-                changes={changes}
-                setChanges={setChanges}
-              />
+      <GradeSelectionDropdown gradeSelection={tableGradeSelection} setGradeSelection={setTableGradeSelection} />
+      <Table striped bordered hover responsive className="bg-white/60 p-2 rounded-2xl">
+        <thead>
+          <tr>
+            <th>Row</th>
+            <th>Special ID</th>
+            <th>Student Name</th>
+            {events.map((event, index) => (
+              <th key={index}>{event.name}</th>
             ))}
-          </tbody>
-        </Table>
-        <button className="bg-emerald-400 hover:bg-emerald-500 py-2 px-3 rounded-full font-bold text-white" onClick={handleShow}>
-          Update
-        </button>
-        <AdminAttendanceChangesModal
-          changes={changes}
-          show={show}
-          handleClose={handleClose}
-          setChanges={setChanges}
-          totalAttendanceSheetChanges={totalAttendanceSheetChanges}
-        />
-      </div>
+          </tr>
+        </thead>
+        <tbody>
+          {studentList.map((student, index) => (
+            <StudentRow
+              key={index}
+              student={student}
+              events={events}
+              rowNum={index + 1}
+              changes={changes}
+              setChanges={setChanges}
+            />
+          ))}
+        </tbody>
+      </Table>
+      <button className="bg-emerald-400 hover:bg-emerald-500 py-2 px-3 rounded-full font-bold text-white" onClick={handleShow}>
+        Update
+      </button>
+      <AdminAttendanceChangesModal
+        changes={changes}
+        show={show}
+        handleClose={handleClose}
+        setChanges={setChanges}
+        totalAttendanceSheetChanges={totalAttendanceSheetChanges}
+      />
     </main>
   );
 };

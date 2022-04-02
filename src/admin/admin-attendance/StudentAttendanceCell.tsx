@@ -6,7 +6,6 @@ import { StudentSheetChange, SheetChangeType, SheetChange } from "./AdminAttenda
 
 interface StudentAttendanceCellProps {
   event: Event;
-  index: number;
   student: Student;
   changes: StudentSheetChange[];
   setChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
@@ -15,7 +14,6 @@ interface StudentAttendanceCellProps {
 const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
   student,
   event,
-  index,
   changes,
   setChanges,
 }) => {
@@ -29,8 +27,14 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
   useEffect(() => {
     if (changes.filter((change) => change.student.specialId === student.specialId).length === 0) {
       setCheckboxFromFirebase();
-    }
+    } 
   }, [changes]);
+
+  useEffect(() => {
+      if (student.name == "Jared Kuang") {
+        console.log(event);
+      }
+  });
 
   const setCheckboxFromFirebase = () => {
     for(var i = 0; i < student.attendance.length; i++) {
@@ -38,9 +42,6 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
         if (student.attendance[i].didAttend) {
           setCheckedBoxValue(true);
           setOriginalValue(true);
-        } else {
-          setCheckedBoxValue(false);
-          setOriginalValue(false);
         }
       }
     }
@@ -100,7 +101,7 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
   };
 
   return (
-    <td key={index}>
+    <td>
       <div className="flex justify-center">
         <OverlayTrigger placement="top" overlay={
           <Tooltip>{student.name}</Tooltip>

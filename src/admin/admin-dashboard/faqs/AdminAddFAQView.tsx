@@ -10,7 +10,6 @@ interface AdminAddFAQViewProps  {
     handleClose: () => void;
 }
 
-
 const AdminAddFAQView: React.FC<AdminAddFAQViewProps> = ({ show, handleClose}) => {
     const [newFAQTitle, setNewFAQTitle] = useState("");
     const [newFAQContent, setNewFAQContent] = useState("");

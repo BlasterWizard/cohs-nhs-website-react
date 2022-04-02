@@ -77,13 +77,9 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
         setPriorEvents(items);
         break;
       case "mandatory":
-
         findAndCategorizeEvents();
         setFilterSelection(AttendanceSelectionFilter.Mandatory);
-        console.log(priorEvents);
         setPriorEvents(priorEvents.filter((priorEvent) => priorEvent.optionality === "M"));
-        // setTodayEvents(todayEvents.filter((todayEvent) => todayEvent.optionality === "M"));
-        // setUpcomingEvents(upcomingEvents.filter((upcomingEvent) => upcomingEvent.optionality === "M"));
         break;
       case "none":
         findAndCategorizeEvents();
@@ -222,8 +218,9 @@ const CategorizedAttendanceEventsView: React.FC<CategorizedAttendanceEventsViewP
   }
 
   return (
-    <div>
-       <div className="flex items-center w-full my-2">
+    <div> 
+      {
+        events.length > 0 ? <div className="flex items-center w-full my-2">
         <button disabled={yearSelectionIndex === 0} onClick={reverseYearSelectionIndex}>
           {
             yearSelectionIndex === 0  ?
@@ -243,7 +240,9 @@ const CategorizedAttendanceEventsView: React.FC<CategorizedAttendanceEventsViewP
           }
         </button>
       </div>
-      
+        : ""
+      }
+       
       <div className="space-y-5">
         {events.filter((event: Event) => event.startDate.getFullYear().toString() === yearCategories[yearSelectionIndex]).map(
           (event: Event, index: number) => (
