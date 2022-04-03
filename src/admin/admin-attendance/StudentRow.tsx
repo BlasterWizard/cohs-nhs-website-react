@@ -18,19 +18,14 @@ const StudentRow: React.FC<StudentRowProps> = ({
     changes,
     setChanges,
   }) => {
-    // useEffect(() => {
-    //   if (student.name == "Jared Kuang" || student.name == "justintest") {
-    //     console.log(events);
-    //   }
-    // });
-        
+
     return (
       <tr>
         <th>{rowNum}</th>
         <td>{student.specialId}</td>
         <td className="font-bold">{student.name}</td>
         {events.map((event, index) => {
-          return(<StudentAttendanceCell student={student} event={event} key={index} changes={changes} setChanges={setChanges}/>);
+          return(event.code.substring(0,2) != "NN" && <StudentAttendanceCell student={student} event={event} key={index} changes={changes} setChanges={setChanges}/>);
         })}
       </tr>
     );

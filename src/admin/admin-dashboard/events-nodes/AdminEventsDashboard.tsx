@@ -47,10 +47,8 @@ const AdminEventsDashboard: React.FC<AdminEventsDashboardProps> = ({
 
 
   return (
-
-
     <div className="bg-white/60 p-5 rounded-2xl flex flex-col items-center">
-      <h3 className="font-bold text-2xl">Event Dashboard</h3>
+      <h3 className="font-bold text-2xl">NHS Events Dashboard</h3>
       <div className="space-y-3 flex flex-col mt-3">
         <button className="bg-indigo-400 py-1 px-3 rounded-full font-bold text-white" onClick={toggleShowEventsView}>
           View All Events <span className="bg-white/60 py-0.5 px-2 text-black rounded-full">{events.length}</span>
@@ -62,7 +60,6 @@ const AdminEventsDashboard: React.FC<AdminEventsDashboardProps> = ({
       <AdminEventsView show={showEventsView} handleClose={toggleShowEventsView} students={students} events={events} getStudentNameFromID={getStudentNameFromID}/>
       <AddEventModalView show={showAddEventModalView} handleClose={toggleShowAddEventModalView} eventList={events} students={students}/> 
     </div>
-
   );
 };
 

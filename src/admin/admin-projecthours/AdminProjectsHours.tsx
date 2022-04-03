@@ -78,6 +78,7 @@ const AdminProjectHours: React.FC<AdminProjectsHoursProps> = ({
             <th>Row</th>
             <th>Special ID</th>
             <th>Student Name</th>
+            <th>Non-NHS Hours</th>
             {projectEvents.map((event, index) => (
               <th key={index} className="text-center">{event.name}</th>
             ))}

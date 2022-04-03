@@ -100,7 +100,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
             <th>Special ID</th>
             <th>Student Name</th>
             {events.map((event, index) => (
-              <th key={index}>{event.name}</th>
+              event.code.substring(0,2) != "NN" && <th key={index}>{event.name}</th>
             ))}
           </tr>
         </thead>

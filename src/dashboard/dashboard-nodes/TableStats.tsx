@@ -20,7 +20,7 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
   const tabulateNumberOfTotalEventsAttended = () => {
     var numberofAttendedEvents: number = 0;
     student?.attendance.forEach((attendedEvent: AttendedEvent) => {
-      if (attendedEvent.didAttend === true) {
+      if (attendedEvent.didAttend === true && attendedEvent.code.substring(0,2)!== "NN") {
         numberofAttendedEvents += 1;
       }
     });
@@ -45,7 +45,7 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
             <p>{totalProjectHours} / {requiredHours}</p>
           </div>
           <div className="space-x-2 flex p-1">
-            <p className="font-bold">Total Events Attended:</p>
+            <p className="font-bold">Total NHS Events Attended:</p>
             <div className="flex-grow"></div>
             <p>{totalEventsAttended}</p>
           </div>
