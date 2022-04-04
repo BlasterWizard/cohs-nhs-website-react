@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
-import { Badge, Form } from "react-bootstrap";
 import { Student } from "../../../App";
 import AddStudentModalView from "./AddStudentModalView";
-import NewStudentModalView from "./AddStudentModalView";
 import StudentsModalView from "./StudentsModalView";
 
 interface AdminStudentsDashboardProps {
@@ -23,11 +20,6 @@ const AdminStudentsDashboard: React.FC<AdminStudentsDashboardProps> = ({
   const toggleShowAddStudentModal = () => {
     showAddStudentModal ? setShowAddStudentModal(false) : setShowAddStudentModal(true);
   }
-
-  useEffect(() => {
-    // setStudentList(students.sort((a, b) => a.name.localeCompare(b.name)));
-  }, [students]);
-
 
   return (
     <div className="bg-white/60 p-5 rounded-2xl flex flex-col items-center">

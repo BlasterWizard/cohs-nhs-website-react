@@ -95,7 +95,7 @@ const AdminAttendance: React.FC<AdminAttendanceProps> = ({
       <GradeSelectionDropdown gradeSelection={tableGradeSelection} setGradeSelection={setTableGradeSelection} />
       <Table striped bordered hover responsive className="bg-white/60 p-2 rounded-2xl">
         <thead>
-          <tr>
+          <tr className="text-center">
             <th>Row</th>
             <th>Special ID</th>
             <th>Student Name</th>

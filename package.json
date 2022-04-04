@@ -1,6 +1,6 @@
 {
   "name": "cohs-nhs-website",
-  "version": "0.1.0 Beta 7",
+  "version": "0.1.0 Beta 8",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",

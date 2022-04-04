@@ -22,7 +22,7 @@ const StudentsModalView: React.FC<StudentsModalViewProps> = ({ students, show, h
     useEffect(() => {
       setSeniors(students.filter((student) => student.grade == 12));
       setJuniors(students.filter((student) => student.grade == 11));
-    }, [seniors, juniors]);
+    }, [students]);
 
     return (
         <Modal size="lg" centered show={show} scrollable={true}>

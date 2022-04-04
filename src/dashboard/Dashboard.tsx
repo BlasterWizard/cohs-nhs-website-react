@@ -92,6 +92,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         totalProjectHours={totalProjectHours}
         totalMandatoryAttendedEvents={totalMandatoryAttendedEvents}
         settings={settings}
+        events={events}
       />
     </main>
   );

@@ -96,7 +96,6 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
         }
       }
     }
-    console.log(copyChanges);
     setChanges(copyChanges);
   };
 
@@ -112,8 +111,6 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
             onChange={onCheckedBoxChanged}
           ></input>     
         </OverlayTrigger>
-        
-        {/* <span className="student-name-attendance-cell">{student.name}</span> */}
       </div>
     </td>
   );

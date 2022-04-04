@@ -6,9 +6,10 @@ interface TableStatsProps {
     totalMandatoryAttendedEvents: number;
     totalProjectHours: number;
     settings: Setting;
+    events: Event[];
 }
 
-const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, totalMandatoryAttendedEvents, settings}) => {
+const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, totalMandatoryAttendedEvents, settings, events}) => {
   const [totalEventsAttended, setTotalEventsAttended] = useState<number>(0);
   const [requiredHours, setRequiredHours] = useState<number>(0);
 
@@ -38,13 +39,13 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
   }
 
     return (
-      <div className="bg-white/60 rounded-lg p-4">
+      <div className="bg-white/50 rounded-lg p-4">
           <div className="bg-slate-400/30 space-x-2 flex p-1">
             <p className="font-bold">Total Project Hours:</p>
             <div className="flex-grow"></div>
             <p>{totalProjectHours} / {requiredHours}</p>
           </div>
-          <div className="space-x-2 flex p-1">
+          <div className="bg-white/60 space-x-2 flex p-1">
             <p className="font-bold">Total NHS Events Attended:</p>
             <div className="flex-grow"></div>
             <p>{totalEventsAttended}</p>
@@ -52,12 +53,13 @@ const TableStats: React.FC<TableStatsProps> = ({student, totalProjectHours, tota
           <div className="bg-slate-400/30 space-x-2 flex p-1">
             <p className="font-bold">Mandatory NHS Events Attended:</p>
             <div className="flex-grow"></div>
-            <p>{totalMandatoryAttendedEvents}</p>
+            <p>{totalMandatoryAttendedEvents} / {events.filter((event) => event.optionality === "M").length}</p>
           </div>
-          {/* <tr>
-            <td className="font-bold">Non NHS Events Attended:</td>
-            <td></td>
-          </tr> */}
+          <div className="bg-white/60 space-x-2 flex p-1">
+            <p className="font-bold">Non NHS Events Attended:</p>
+            <div className="flex-grow"></div>
+            <p>{student?.attendance.filter((attendedEvent) => attendedEvent.code.substring(0, 2) === "NN").length}</p>
+          </div>
       </div>
       
     );

@@ -108,11 +108,13 @@ function App() {
   });
   const [termDates, setTermDates] = useState<TermDates>();
   const [faqs, setFAQs] = useState<FAQNode[]>([]);
+  const [onlineStatus, setOnlineStatus] = useState(true);
   const localStorage = window.localStorage;
 
 
   useEffect(() => {
     fetchAllStudentsFromFirestore();
+    checkInternetConnection();
     authUser();
   }, [user]);
 
@@ -132,6 +134,18 @@ function App() {
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("isAdmin");
       }
+    });
+  }
+
+  const checkInternetConnection = () => {
+    window.addEventListener("offline", () => {
+      console.log("offline");
+      setOnlineStatus(false);
+    });
+
+    window.addEventListener("online", () => {
+      console.log("online");
+      setOnlineStatus(true);
     });
   }
 
@@ -221,7 +235,6 @@ function App() {
     });
     setLoading(false);
   }
- 
 
   const signoutHandler = () => {
     signOut(auth).then(() => {
@@ -319,10 +332,6 @@ function App() {
     }
   }
 
-  if (!window.navigator.onLine) {
-    return <p>No Internet</p>
-  } 
-
   return (
     <div>
       <ToasterNode />
@@ -359,9 +368,15 @@ function App() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-
-
       
+      {/* Offline Notification */}
+      {
+        !onlineStatus && <div className="bg-red-500/80 h-8 flex items-center justify-center">
+                            <p className="text-white font-bold">⚠️<span className="m-2">No Internet Connection</span>⚠️</p>
+                          </div>
+      }
+      
+
       {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
       <Routes>
@@ -410,7 +425,5 @@ function App() {
     
   );
 }
-
-
 
 export default App;

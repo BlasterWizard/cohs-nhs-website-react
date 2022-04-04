@@ -97,22 +97,7 @@ const Attendance: React.FC<AttendanceProps> = ({ student, isLoading, events }) =
       <DashboardPagination
         defaultActiveKey={DashboardPaginationKeys.Attendance}
       />
-
-      {/* <div className="flex items-center space-x-3 my-3">
-        <DropdownButton title="Filters" className="bg-indigo-500" onSelect={selectFilter}>
-          <Dropdown.Item eventKey="present" className="hover:bg-indigo-200">Present</Dropdown.Item>
-          <Dropdown.Item eventKey="mandatory" className="hover:bg-indigo-200">Mandatory Events</Dropdown.Item>
-          <Dropdown.Item eventKey="none" className="hover:bg-indigo-200">
-            <div className="flex items-center space-x-3">
-              <p>None</p>
-              <i className="fas fa-eraser"></i>
-            </div>
-          </Dropdown.Item>
-        </DropdownButton>
-        <p className="font-bold text-xl text-white">{filterSelection.charAt(0).toUpperCase() + filterSelection.slice(1)}</p>
-      </div> */}
-     
-    
+      
       {student?.attendance.length === 0 ? (
         <h4 className="no-found small-glass">No Events Attended</h4>
       ) : (
@@ -192,6 +177,10 @@ const CategorizedAttendanceEventsView: React.FC<CategorizedAttendanceEventsViewP
     createYearCategories();
   }, [events]);
 
+  useEffect(() => {
+    console.log(yearSelectionIndex);
+  }, [yearSelectionIndex]);
+
   const createYearCategories = () => {
     var items: string[] = [];
     events.forEach((event) => {
@@ -263,17 +252,21 @@ const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event, student }) => 
   }, [event, student]);
 
   const getAttendedEvent = () => {
-    student?.attendance.forEach((attendedEvent) => {
-      if (event.code === attendedEvent.code) {
-        setAttendedEvent({
-          code: event.code,
-          didAttend: attendedEvent.didAttend,
-          localEventName: attendedEvent.localEventName,
-          projectHours: attendedEvent.projectHours,
-          startDate: attendedEvent.startDate
-        });
+    if (student != undefined) {
+      for (var i = 0; i < student?.attendance.length; i++) {
+        if (event.code === student?.attendance[i].code) {
+          setAttendedEvent({
+            code: event.code,
+            didAttend: student?.attendance[i].didAttend,
+            localEventName: student?.attendance[i].localEventName,
+            projectHours: student?.attendance[i].projectHours,
+            startDate: student?.attendance[i].startDate
+          });
+          return;
+        }
       }
-    });
+      setAttendedEvent(undefined);
+    }
   }
 
   return (
@@ -282,7 +275,7 @@ const AttendanceEvent: React.FC<AttendanceEventProps> = ({ event, student }) => 
       <h4>{event.startDate ? event.startDate.toLocaleDateString("en-US") : ""}</h4>
       <div className="flex space-x-3">
         <p className={attendedEvent?.didAttend ? "bg-emerald-400 text-white font-bold w-fit rounded-full p-0.5 px-2" : "bg-red-400 text-white font-bold w-fit rounded-full p-0.5 px-2"}>
-          {attendedEvent?.didAttend ? "Present" : "Absent"}
+          {attendedEvent !== undefined && attendedEvent?.didAttend ? "Present" : "Absent"}
         </p>
         {attendedEvent?.projectHours ? (
               <p className="bg-blue-400 rounded-full py-0.5 px-3 w-fit text-white space-x-2">
