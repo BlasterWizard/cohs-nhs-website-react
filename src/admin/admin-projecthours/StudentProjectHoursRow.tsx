@@ -59,7 +59,7 @@ const StudentProjectHoursRow: React.FC<StudentProjectHoursRowProps> = ({ student
         </div>
       </td>
       {events.map((event, index) => {
-        <StudentProjectHoursCell student={student} index={index} event={event} projectChanges={projectChanges} setProjectChanges={setProjectChanges}/>
+        return <StudentProjectHoursCell student={student} key={index} event={event} projectChanges={projectChanges} setProjectChanges={setProjectChanges}/>
       })}
       <AddStudentNonNHSHoursModal show={addStudentNonNHSHours} handleClose={toggleAddStudentNonNHSHours} student={student}/>
       <ShowAllStudentNonNHSHoursModal show={viewStudentNonNHSHours} handleClose={toggleViewStudentNonNHSHours} student={student}/>

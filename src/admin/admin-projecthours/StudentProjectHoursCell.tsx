@@ -8,7 +8,6 @@ import { StudentSheetChange, SheetChange } from "../admin-attendance/AdminAttend
 
 interface StudentProjectHoursCellProps {
   event: Event;
-  index: number;
   student: Student;
   projectChanges: StudentSheetChange[];
   setProjectChanges: React.Dispatch<React.SetStateAction<StudentSheetChange[]>>;
@@ -16,7 +15,6 @@ interface StudentProjectHoursCellProps {
 
 const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
   event,
-  index,
   student,
   projectChanges,
   setProjectChanges,
@@ -123,8 +121,8 @@ const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
   };
 
   return (
-    <td key={index}>
-      <div className="flex justify-center">
+    <td>
+      <div className="flex justify-center w-full">
         <OverlayTrigger placement="top" overlay={
           <Tooltip>{student.name}</Tooltip>
         }>
@@ -132,7 +130,7 @@ const StudentProjectHoursCell: React.FC<StudentProjectHoursCellProps> = ({
           type="text"
           value={newProjectHoursValue}
           onChange={onProjectHoursValueChanged}
-          className="rounded-lg w-10 text-center"
+          className="rounded-lg w-14 text-center"
         />
         </OverlayTrigger>
       </div>

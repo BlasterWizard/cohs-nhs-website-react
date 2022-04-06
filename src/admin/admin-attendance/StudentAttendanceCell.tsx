@@ -30,12 +30,6 @@ const StudentAttendanceCell: React.FC<StudentAttendanceCellProps> = ({
     } 
   }, [changes]);
 
-  useEffect(() => {
-      if (student.name == "Jared Kuang") {
-        console.log(event);
-      }
-  });
-
   const setCheckboxFromFirebase = () => {
     for(var i = 0; i < student.attendance.length; i++) {
       if (event.code === student.attendance[i].code) {
